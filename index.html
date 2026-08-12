@@ -2,23 +2,26 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>PANCADÃO! — Arena de Briga</title>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Chakra+Petch:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--azul:#2fa8ff;--verm:#ff4d5e;--laranja:#ff7a1a;--ouro:#ffd23d;--painel:#151a33;--borda:#2c3660;--texto:#eef1ff}
+:root{--azul:#2fa8ff;--verm:#ff4d5e;--laranja:#ff7a1a;--ouro:#ffd23d;--painel:#151a33;--borda:#2c3660;--texto:#eef1ff;--band:0px}
 *{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden;background:#07081a;font-family:'Chakra Petch',sans-serif;color:var(--texto)}
-#stage-wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(1200px 700px at 50% 30%,#101433,#07081a)}
-canvas#cv{width:min(100vw,177.7vh);height:min(56.2vw,100vh);display:block;box-shadow:0 0 120px #000c inset}
+#stage-wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding-bottom:var(--band);background:radial-gradient(1200px 700px at 50% 30%,#101433,#07081a)}
+canvas#cv{width:min(100vw,calc((100vh - var(--band))*1.7778));height:min(56.2vw,calc(100vh - var(--band)));display:block;box-shadow:0 0 120px #000c inset}
+body.touchmode{--band:clamp(120px,30vh,260px)}
 #blind{position:absolute;inset:0;background:radial-gradient(circle,#fff 40%,#fff8e0);opacity:0;pointer-events:none;z-index:30;transition:opacity .12s}
 .notice{position:absolute;top:9%;left:50%;transform:translateX(-50%);font-family:Bangers;font-size:clamp(16px,4vh,30px);letter-spacing:2px;background:#3a1060e8;border:3px solid #b06bff;color:#e9d4ff;padding:6px 26px;border-radius:8px;display:none;z-index:31;box-shadow:5px 5px 0 #0008;white-space:nowrap}
 #announce{position:absolute;top:34%;left:0;right:0;text-align:center;font-family:Bangers;font-size:clamp(40px,12vh,110px);letter-spacing:4px;color:#fff;pointer-events:none;opacity:0;z-index:32;text-shadow:0 0 26px #ff9a2a,5px 5px 0 #a33400,-3px -3px 0 #401a00}
+body.touchmode #announce{top:22%}
 #announce.show{animation:pop .9s ease forwards}
 @keyframes pop{0%{opacity:0;transform:scale(2.4)}18%{opacity:1;transform:scale(1)}80%{opacity:1}100%{opacity:0;transform:scale(.9)}}
-#hud{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:flex-end;padding:10px 14px;z-index:20;pointer-events:none;gap:8px}
+#hud{position:absolute;left:0;right:0;bottom:10px;display:flex;justify-content:space-between;align-items:flex-end;padding:0 14px;z-index:20;pointer-events:none;gap:8px}
+body.touchmode #hud{bottom:calc(var(--band) + 8px)}
 #hud.hide{display:none}
 .hud-team{display:flex;gap:8px;flex-wrap:wrap}
 #timerBox{font-family:Bangers;font-size:clamp(20px,5vh,44px);color:#fff;background:#0e1230e0;border:3px solid var(--borda);padding:2px 20px 0;border-radius:10px;box-shadow:0 5px 0 #0007;align-self:center;text-shadow:2px 2px 0 #000}
@@ -42,16 +45,19 @@ canvas#cv{width:min(100vw,177.7vh);height:min(56.2vw,100vh);display:block;box-sh
 .fb{font-size:9px;font-weight:700;color:#ffd;min-height:11px;letter-spacing:.4px}
 .fcard em{position:absolute;top:-11px;left:8px;font-style:normal;font-family:Bangers;font-size:13px;background:var(--ouro);color:#3a2500;padding:0 7px;border-radius:5px;border:2px solid #6b4a00}
 #muteBtn{position:fixed;top:12px;right:12px;z-index:60;background:#0e1230;color:#fff;border:3px solid var(--borda);border-radius:10px;font-size:20px;padding:5px 11px;cursor:pointer;box-shadow:0 4px 0 #0008}
-#touchPauseBtn{position:fixed;top:12px;right:64px;z-index:36;width:46px;height:46px;border-radius:50%;background:#ffffff33;border:2px solid #ffffff66;color:#fff;font-size:18px;cursor:pointer;touch-action:none}
+#touchPauseBtn{position:fixed;top:12px;right:64px;z-index:60;width:46px;height:46px;border-radius:50%;background:#ffffff33;border:2px solid #ffffff66;color:#fff;font-size:18px;cursor:pointer;touch-action:none}
 #touchPauseBtn.hidden,#touchUI.hidden{display:none}
-#touchUI{position:fixed;inset:0;z-index:35;pointer-events:none;display:flex;justify-content:space-between;align-items:flex-end;padding:0 16px 96px}
-.t-left,.t-right{display:flex;gap:10px;align-items:flex-end}
-.t-right{flex-direction:column;align-items:flex-end;gap:8px}
-.t-row{display:flex;gap:8px}
-.tbtn{pointer-events:auto;width:62px;height:62px;border-radius:50%;background:#ffffff24;border:2px solid #ffffff59;color:#fff;font-size:20px;font-family:Bangers;letter-spacing:1px;display:flex;align-items:center;justify-content:center;touch-action:none;cursor:pointer}
+/* Deck de toque: faixa exclusiva embaixo, não cobre o mapa */
+#touchUI{position:fixed;left:0;right:0;bottom:0;height:var(--band);z-index:35;pointer-events:none;
+ display:flex;justify-content:space-between;align-items:center;padding:0 14px;
+ background:linear-gradient(#0000,#0e1230f5 26%);border-top:2px solid #2c3660}
+.t-left{display:flex;gap:10px;align-items:center}
+.t-right{display:flex;flex-direction:row;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:6px;max-width:62%}
+.t-row{display:contents}
+.tbtn{pointer-events:auto;width:clamp(46px,12vw,64px);height:clamp(46px,12vw,64px);border-radius:50%;background:#ffffff24;border:2px solid #ffffff59;color:#fff;font-size:clamp(14px,4vw,20px);font-family:Bangers;letter-spacing:1px;display:flex;align-items:center;justify-content:center;touch-action:none;cursor:pointer}
 .tbtn.on{background:#ffd23d99;border-color:var(--ouro);color:#2a1200}
-.tbtn.big{width:78px;height:78px;font-size:26px}
-.tbtn.sm{width:50px;height:50px;font-size:15px}
+.tbtn.big{width:clamp(56px,15vw,78px);height:clamp(56px,15vw,78px);font-size:clamp(18px,5vw,26px)}
+.tbtn.sm{width:clamp(40px,10vw,52px);height:clamp(40px,10vw,52px);font-size:clamp(11px,3vw,15px)}
 .screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;opacity:0;visibility:hidden;transition:opacity .35s,visibility .35s;z-index:40;overflow:auto}
 .screen>*:first-child{margin-top:auto}
 .screen>*:last-child{margin-bottom:auto}
@@ -209,15 +215,11 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
   #grid{grid-template-columns:repeat(auto-fill,minmax(86px,1fr));max-height:44vh}
   #detail{position:static;width:100%;max-width:420px;flex:none}
   .devPanel,.playerPanel{width:100%;max-width:420px}
-  #hud{padding:6px 8px}
+  #hud{padding:0 8px}
   .fcard{min-width:104px;gap:5px}
   .fcard canvas{width:34px;height:34px}
   .fd{font-size:17px}.fn{font-size:9px}.fs{font-size:8px}.fb{font-size:7px}
   .fa i{width:7px;height:4px}
-  #touchUI{padding:0 8px 74px}
-  .tbtn{width:54px;height:54px;font-size:16px}
-  .tbtn.big{width:66px;height:66px;font-size:20px}
-  .tbtn.sm{width:46px;height:46px;font-size:12px}
 }
 @media (max-height:480px){
   .logo{font-size:clamp(44px,11vh,84px)}
@@ -264,7 +266,7 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
   <button class="btn alt" id="btnOnline">🌐 SALAS ONLINE</button>
   <button class="btn alt" id="btnControls">🎮 CONTROLES</button>
   <button class="btn alt" id="btnHelp">COMO JOGAR</button>
-  <div class="blink">▼ ONLINE: CRIE UMA SALA, COMPARTILHE O CÓDIGO E BRIGUEM AO VIVO ▼</div>
+  <div class="blink">▼ NO CELULAR: CONTROLE DE TOQUE COM FAIXA EXCLUSIVA EMBaixo ▼</div>
   <div class="ctrl-strip">
     <span><b>TECLADO 1</b> <kbd>WASD</kbd>+<kbd>F</kbd><kbd>G</kbd><kbd>H</kbd> <kbd>E</kbd> arma <kbd>Q</kbd> def</span>
     <span><b>TECLADO 2</b> <kbd>←↑↓→</kbd>+<kbd>J</kbd><kbd>K</kbd><kbd>L</kbd> <kbd>I</kbd> arma <kbd>O</kbd> def</span>
@@ -357,7 +359,7 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
       <div id="grid"></div>
     </div>
     <div id="detail">
-      <div id="dEmpty">Passe por cima de um<br><b>LUTADOR</b><br>(mouse ou controle) para ver os detalhes</div>
+      <div id="dEmpty">Passe por cima de um<br><b>LUTADOR</b><br>(mouse ou toque) para ver os detalhes</div>
       <div id="dBody">
         <canvas id="dCv" width="116" height="134"></canvas>
         <div id="dName"></div>
@@ -395,10 +397,12 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
 <div class="screen solid" id="scr-help"><div id="helpBox">
   <h3>COMO JOGAR</h3>
   Briga de plataforma estilo Brawlhalla: aumente o <b>% de dano</b> e arremesse todos pra fora da arena. Vence o time que sobrar (4 min).
+  <h3>CELULAR</h3>
+  Escolha o controle <b>CELULAR</b>: durante a partida aparece uma <b>faixa exclusiva de botões embaixo</b> e o mapa fica um pouco menor acima dela, sem ser tampado.
   <h3>ONLINE</h3>
-  Em <b>🌐 SALAS ONLINE</b>: <b>CRIAR SALA</b> gera um código de 4 letras; compartilhe. Os amigos digitam o código em <b>ENTRAR</b> e todos jogam ao mesmo tempo (até 4 humanos; o resto vira CPU). O host escolhe time/mapa/dificuldade e inicia.
-  <h3>ESCOLHA / DEFESA / ARMAS</h3>
-  Seleção começa limpa, ◀ desfaz. DEFESA segura 90% de frente (costas quebra). Armas caem a cada 20s (+30% dano).
+  <b>🌐 SALAS ONLINE</b>: crie uma sala (código de 4 letras) ou entre com o código; até 4 humanos simultâneos.
+  <h3>DEFESA / ARMAS</h3>
+  DEFESA segura 90% de frente (costas quebra). Armas caem a cada 20s (+30% dano).
   <div style="text-align:center;margin-top:16px"><button class="btn small" id="btnHelpBack">VOLTAR</button></div>
 </div></div>
 
@@ -736,7 +740,7 @@ function buildPlayerPanel(p){
  let rows='';
  if(d.kind==='kb')rows=KB_ACTIONS.map(([a,n])=>`<div class="bindRow"><span class="lbl">${n}</span><button class="bindChip" data-dev="${pl.device}" data-action="${a}">${fmtKey(d.bind[a])}</button></div>`).join('');
  else if(d.kind==='gp')rows=`<div class="bindRow"><span class="lbl">MOVER</span><span class="bindChip static">ANALÓGICO + DIRECIONAL</span></div>`+GP_ACTIONS.map(([a,n])=>`<div class="bindRow"><span class="lbl">${n}</span><button class="bindChip" data-dev="${pl.device}" data-action="${a}">BOTÃO ${d.bind[a]}</button></div>`).join('')+((d.family==='PS2'||d.family==='GENÉRICO')?`<div class="warn" style="color:#9fd0ff">Troca automática ao conectar: botão 0 ↔ botão 2.</div>`:'');
- else rows=`<div class="bindRow"><span class="lbl">BOTÕES DE TOQUE</span><span class="bindChip static">NA TELA, DURANTE A LUTA</span></div><div class="warn" style="color:#9fd0ff">📱 Botões aparecem ao iniciar a partida (e na seleção).</div>`;
+ else rows=`<div class="bindRow"><span class="lbl">BOTÕES DE TOQUE</span><span class="bindChip static">FAIXA EMBAIXO NA PARTIDA</span></div><div class="warn" style="color:#9fd0ff">📱 Os botões aparecem numa faixa exclusiva embaixo, sem tampar o mapa.</div>`;
  const shared=PLAYERS.filter(q=>q.device===pl.device).length>1;
  el.innerHTML=`<h3>JOGADOR ${p+1}</h3>${tabs}${rows}${shared?'<div class="warn">⚠ dividindo o mesmo dispositivo com outro jogador</div>':''}`+(d.kind!=='touch'?`<button class="restoreBtn" data-p="${p}">RESTAURAR PADRÃO</button>`:'');
  el.querySelectorAll('.devTab').forEach(b=>{b.onclick=()=>assignDevice(p,b.dataset.dev);
@@ -1074,10 +1078,9 @@ function setupAttract(){
 function touchHumanExists(){return G.fighters.some(f=>f.human&&f.playerIdx>=0&&PLAYERS[f.playerIdx]&&DEVICES[PLAYERS[f.playerIdx].device]&&DEVICES[PLAYERS[f.playerIdx].device].kind==='touch');}
 function touchNeeded(){
  if(paused)return false;
- if($('#scr-select').classList.contains('active'))return SEL&&SEL._touchPick;
- if(G.attract)return false;
  if(SCREENS.some(s=>$('#'+s).classList.contains('active')))return false;
- if(G.net==='guest'&&DEVICES[NET.myDevice]&&DEVICES[NET.myDevice].kind==='touch')return true;
+ if(G.attract)return false;
+ if(G.net==='guest')return !!(DEVICES[NET.myDevice]&&DEVICES[NET.myDevice].kind==='touch');
  return touchHumanExists();}
 
 /* ===== ONLINE ===== */
@@ -1238,8 +1241,8 @@ function openSelect(){
  GRID_ELS.forEach(el=>el.classList.remove('cur0','cur1','cur2','cur3','curC'));
  hideDetail();renderTrays();refreshCardTags();pickStatus();
  show('scr-select');}
-function snap(){return JSON.stringify({teams:SEL.teams,locked:PICK.locked,cpuCur:PICK.cpuCur,phase:PICK.phase});}
-function pushHist(){PICK.history.push(snap());}
+function snapSel(){return JSON.stringify({teams:SEL.teams,locked:PICK.locked,cpuCur:PICK.cpuCur,phase:PICK.phase});}
+function pushHist(){PICK.history.push(snapSel());}
 function selectBack(){
  if(!PICK||PICK.done){show('scr-setup');return;}
  if(!PICK.history.length){show('scr-setup');return;}
@@ -1390,7 +1393,7 @@ function matchUpdate(dt){
   p.vy+=p.grav*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;p.spin+=dt*13;
   if(p.type==='chinela'&&p.bounced<p.bounces&&p.y>688){p.y=688;p.vy=-Math.abs(p.vy)*.75;p.bounced++;}
   if(p.type==='ball'&&p.bounced<p.bounces&&p.y>688){p.y=688;p.vy=-Math.abs(p.vy)*.7;p.bounced++;}
-  if(p.type==='fire'&&Math.random()<.8)G.parts.push({x:p.x-Math.sign(p.vx)*8,y:p.y+rand(-4,4),vx:-p.vx*.15+rand(-30,30),vy:rand(-70,-10),life:.4,ml:.4,col:Math.random()<.5?'#ffb25e':'#ff7a1a',r:rand(2,5)});
+  if(p.type==='fire'&&Math.random()<.8)G.parts.push({x:p.x-Math.sign(p.vx||1)*8,y:p.y+rand(-4,4),vx:-p.vx*.15+rand(-30,30),vy:rand(-70,-10),life:.4,ml:.4,col:Math.random()<.5?'#ffb25e':'#ff7a1a',r:rand(2,5)});
   if(p.type==='ice'&&Math.random()<.5)G.parts.push({x:p.x,y:p.y,vx:rand(-30,30),vy:rand(-20,40),life:.4,ml:.4,col:'#d6f2ff',r:rand(1.5,3)});
   let dead=p.life<=0||p.x<-60||p.x>W+60||p.y>H+60;
   if(!dead)for(const w of G.walls){if(p.x>w.x-p.r&&p.x<w.x+w.w+p.r&&p.y>w.y-p.r&&p.y<w.y+w.h+p.r){burst(p.x,p.y,p.col,6,150);dead=true;break;}}
@@ -1552,7 +1555,6 @@ function drawWorldFighter(c,f,t){
  c.translate(f.x,f.y);
  if(f.spinT>0)c.rotate(f.spinT*22*f.face);
  c.scale(FS*f.face,FS);
- drawChar(c,ch=>f.ch, o);
  drawChar(c,f.ch,o);
  c.restore();
  if(f.freezeT>0){c.fillStyle='rgba(159,220,255,.45)';rr(c,f.x-20,f.y-92,40,92,8);c.fill();c.strokeStyle='#d6f2ff';c.lineWidth=2;rr(c,f.x-20,f.y-92,40,92,8);c.stroke();}
@@ -1754,6 +1756,7 @@ function loop(ts){
  if(G.net==='host'&&(G.state==='fight'||G.state==='count'||G.state==='over')){NET.snapAcc+=dt;if(NET.snapAcc>0.05){NET.snapAcc=0;sendSnap();}}
  if(G.net==='guest'&&G.state==='fight'){NET.inAcc+=dt;if(NET.inAcc>0.033){NET.inAcc=0;sendIn();}}
  const tn=touchNeeded();
+ document.body.classList.toggle('touchmode',tn);
  $('#touchUI').classList.toggle('hidden',!tn);
  $('#touchPauseBtn').classList.toggle('hidden',!tn);
  if($('#scr-select').classList.contains('active')){
