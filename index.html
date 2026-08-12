@@ -34,6 +34,9 @@ body.touchmode #hud{bottom:calc(var(--band) + 8px)}
 .fn{font-weight:700;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#cfd8ff}
 .fd{font-family:Bangers;font-size:24px;line-height:1;color:#fff;text-shadow:2px 2px 0 #000}
 .fs{font-size:10px;letter-spacing:2px;color:var(--ouro)}
+.fa{display:flex;gap:2px;margin:3px 0 1px}
+.fa i{width:9px;height:5px;background:var(--ouro);border-radius:2px;box-shadow:0 0 4px #ffd23d77}
+.fa i.off{background:#333a66;box-shadow:none}
 .fp{height:5px;width:100%;background:#232a52;border-radius:3px;overflow:hidden;margin:3px 0 1px}
 .fp i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--ouro),#ff9a2a)}
 .fb{font-size:9px;font-weight:700;color:#ffd;min-height:11px;letter-spacing:.4px}
@@ -41,9 +44,7 @@ body.touchmode #hud{bottom:calc(var(--band) + 8px)}
 #muteBtn{position:fixed;top:12px;right:12px;z-index:60;background:#0e1230;color:#fff;border:3px solid var(--borda);border-radius:10px;font-size:20px;padding:5px 11px;cursor:pointer;box-shadow:0 4px 0 #0008}
 #touchPauseBtn{position:fixed;top:12px;right:64px;z-index:60;width:46px;height:46px;border-radius:50%;background:#ffffff33;border:2px solid #ffffff66;color:#fff;font-size:18px;cursor:pointer;touch-action:none}
 #touchPauseBtn.hidden,#touchUI.hidden{display:none}
-#touchUI{position:fixed;left:0;right:0;bottom:0;height:var(--band);z-index:35;pointer-events:none;
- display:flex;justify-content:space-between;align-items:center;padding:0 14px;
- background:linear-gradient(#0000,#0e1230f5 26%);border-top:2px solid #2c3660}
+#touchUI{position:fixed;left:0;right:0;bottom:0;height:var(--band);z-index:35;pointer-events:none;display:flex;justify-content:space-between;align-items:center;padding:0 14px;background:linear-gradient(#0000,#0e1230f5 26%);border-top:2px solid #2c3660}
 .t-left{display:flex;gap:10px;align-items:center}
 .t-right{display:flex;flex-direction:row;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:6px;max-width:62%}
 .t-row{display:contents}
@@ -114,10 +115,6 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
 .tagT span.gold{background:var(--ouro);color:#3a2500}
 .card.deny{animation:shakeX .3s}
 @keyframes shakeX{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-.card.cur0{box-shadow:0 0 0 3px #ffd23d,0 8px 0 #0006;border-color:#ffd23d}
-.card.cur1{box-shadow:0 0 0 3px #7ef9ff,0 8px 0 #0006;border-color:#7ef9ff}
-.card.cur2{box-shadow:0 0 0 3px #b6ff8a,0 8px 0 #0006;border-color:#b6ff8a}
-.card.cur3{box-shadow:0 0 0 3px #ff9de2,0 8px 0 #0006;border-color:#ff9de2}
 .card.curC{box-shadow:0 0 0 3px #ffffff,0 8px 0 #0006;border-color:#fff}
 #detail{flex:0 0 250px;width:250px;align-self:flex-start;position:sticky;top:0;background:#0e1230f2;border:3px solid var(--borda);border-radius:12px;padding:12px;box-shadow:8px 8px 0 #0009;transition:border-color .2s}
 #detail.show{border-color:var(--ouro)}
@@ -134,6 +131,16 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
 #dPow p{font-size:11.5px;color:#d9c9f5;margin-top:2px}
 #dWp{margin-top:6px;font-size:11.5px;color:#9fd0ff}
 #dWp b{color:var(--ouro)}
+/* aba lateral da sala online */
+#roomPanel{position:fixed;left:12px;top:60px;width:210px;z-index:45;background:#0e1230f5;border:3px solid var(--ouro);border-radius:12px;padding:10px;box-shadow:6px 6px 0 #0009;display:none}
+#roomPanel.show{display:block}
+#roomPanel h4{font-family:Bangers;font-size:16px;color:var(--ouro);letter-spacing:1px}
+#rpCode{font-family:Bangers;font-size:30px;color:#fff;text-align:center;letter-spacing:4px;text-shadow:2px 2px 0 #000}
+#rpList{margin-top:6px;display:flex;flex-direction:column;gap:4px}
+.rp{display:flex;gap:6px;align-items:center;font-size:11px;font-weight:700;color:#cfd8ff;background:#1b2145;border-radius:6px;padding:3px 6px}
+.rp canvas{width:26px;height:30px;border-radius:4px}
+.rp .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rp .st{font-size:9px;color:#7dff9e}
 #scr-vs{background:#07081af0}
 #vsBox{display:flex;align-items:center;gap:clamp(12px,4vw,40px);flex-wrap:wrap;justify-content:center;padding:10px}
 .vsTeam{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
@@ -159,36 +166,30 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
 .ctl-hint{font-size:clamp(9px,1.6vh,10px);color:#9fb0e8;margin-bottom:6px;text-align:center;padding:0 8px}
 .ctl-hint b{color:var(--ouro)}
 #ctlWrap{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:flex-start;padding-bottom:4px}
-.devPanel,.playerPanel{background:#12173add;border:2px solid var(--borda);border-radius:12px;padding:10px;box-shadow:4px 4px 0 #0008;transition:border-color .12s,box-shadow .12s}
+.devPanel,.playerPanel{background:#12173add;border:2px solid var(--borda);border-radius:12px;padding:10px;box-shadow:4px 4px 0 #0008}
 .devPanel{width:250px}
 .playerPanel{width:300px}
-.playerPanel.flashP{border-color:var(--ouro);box-shadow:0 0 20px #ffd23d77,4px 4px 0 #0008}
 .devPanel h3,.playerPanel h3{font-family:Bangers;font-size:15px;letter-spacing:2px;color:var(--ouro);margin-bottom:6px;text-shadow:2px 2px 0 #000}
-.devRow{background:#1b2145;border:2px solid var(--borda);border-radius:8px;padding:5px 8px;display:flex;gap:8px;align-items:center;margin-bottom:6px;transition:border-color .15s,box-shadow .15s}
+.devRow{background:#1b2145;border:2px solid var(--borda);border-radius:8px;padding:5px 8px;display:flex;gap:8px;align-items:center;margin-bottom:6px}
 .devRow .ico{font-size:14px;width:24px;height:24px;background:#232a52;border-radius:6px;display:flex;align-items:center;justify-content:center;flex:0 0 24px}
 .devRow .tx{flex:1;min-width:0}
 .devRow .nm{font-weight:700;font-size:11px;color:#eef1ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .devRow .sub{font-size:9px;color:#8fa0d8}
-.devRow .press{font-size:9px;color:var(--ouro);font-weight:700;min-height:10px}
 .devRow.off{opacity:.45}
-.devRow.flash{border-color:var(--ouro);box-shadow:0 0 14px #ffd23d55}
 .badge{font-family:Bangers;font-size:10px;letter-spacing:1px;padding:2px 8px;border-radius:6px;border:2px solid #000;flex:0 0 auto}
 .b-kb{background:#7b5bd6;color:#fff}.b-gen{background:#6a7390;color:#fff}.b-xbox{background:#3fae4c;color:#04250a}.b-ps{background:#3f7bd9;color:#fff}.b-sw{background:#e0455a;color:#fff}.b-touch{background:#d84b8f;color:#fff}
 .devNote{font-size:9px;color:#8fa0d8;line-height:1.5;margin-top:6px}
 .devNote b{color:var(--ouro)}
 .devTabs{display:flex;gap:4px;flex-wrap:wrap;margin:2px 0 8px}
-.devTab{font-family:Bangers;font-size:10px;letter-spacing:1px;padding:4px 8px;border-radius:7px;border:2px solid var(--borda);background:#1b2145;color:#aab6e8;cursor:pointer;display:flex;gap:4px;align-items:center;transition:.12s}
-.devTab:hover{border-color:var(--ouro);color:#fff}
-.devTab.on{background:var(--ouro);color:#3a2500;border-color:#6b4a00;box-shadow:0 0 10px #ffd23d66}
+.devTab{font-family:Bangers;font-size:10px;letter-spacing:1px;padding:4px 8px;border-radius:7px;border:2px solid var(--borda);background:#1b2145;color:#aab6e8;cursor:pointer;display:flex;gap:4px;align-items:center}
+.devTab.on{background:var(--ouro);color:#3a2500;border-color:#6b4a00}
 .devTab.off{opacity:.4}
 .bindRow{display:flex;justify-content:space-between;align-items:center;gap:8px;border:2px solid var(--borda);border-radius:8px;padding:4px 8px;margin-bottom:4px;background:#141a3a}
 .bindRow .lbl{font-size:9px;font-weight:700;letter-spacing:1.2px;color:#cfd8ff}
-.bindChip{font-family:Bangers;font-size:11px;letter-spacing:1px;color:var(--ouro);background:#232a52;border:2px solid #46529b;border-radius:7px;padding:2px 8px;cursor:pointer;min-width:56px;text-align:center;transition:.12s}
-.bindChip:hover{border-color:var(--ouro);background:#2e3768;transform:translateY(-1px)}
+.bindChip{font-family:Bangers;font-size:11px;letter-spacing:1px;color:var(--ouro);background:#232a52;border:2px solid #46529b;border-radius:7px;padding:2px 8px;cursor:pointer;min-width:56px;text-align:center}
 .bindChip.static{color:#aab6e8;cursor:default;font-size:10px;min-width:0}
 .warn{font-size:9px;color:#ff9a3d;font-weight:700;margin:2px 0 4px}
 .restoreBtn{font-family:Bangers;font-size:12px;letter-spacing:2px;background:#232a52;border:2px solid #000;box-shadow:2px 2px 0 #000;padding:4px 12px;border-radius:7px;color:#fff;cursor:pointer;margin-top:4px}
-.restoreBtn:hover{background:#2e3768;transform:translate(-1px,-1px);box-shadow:3px 3px 0 #000}
 #gpStatus{position:fixed;top:12px;left:12px;z-index:55;font-size:11px;color:#9fd0ff;background:#0e1230cc;padding:4px 10px;border-radius:6px;border:1px solid var(--borda);display:none;max-width:60vw}
 #gpStatus.show{display:block}
 #gpStatus b{color:var(--ouro)}
@@ -201,28 +202,14 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
 #bindModal .cancel{margin-top:16px;font-family:Bangers;font-size:clamp(13px,2.4vh,16px);padding:6px 22px;border:2px solid var(--borda);background:#1c2447;color:#fff;border-radius:8px;cursor:pointer}
 .optmini{font-family:Bangers;font-size:11px;padding:3px 8px;border-radius:6px;border:2px solid var(--borda);background:#1b2145;color:#aab6e8;cursor:pointer;margin:0 2px}
 .optmini.on{background:var(--ouro);color:#3a2500;border-color:#6b4a00}
-#olCodeIn{font-family:Bangers;font-size:20px;letter-spacing:4px;width:110px;text-align:center;background:#1b2145;border:2px solid var(--borda);border-radius:8px;color:var(--ouro);padding:4px}
+#nickIn,#olCodeIn{font-family:Bangers;letter-spacing:2px;text-align:center;background:#1b2145;border:2px solid var(--borda);border-radius:8px;color:var(--ouro);padding:6px;width:190px}
 @media (max-width:900px){
   #selWrap{flex-direction:column;align-items:center}
   #selMain{width:100%;flex:none}
   #grid{grid-template-columns:repeat(auto-fill,minmax(86px,1fr));max-height:44vh}
   #detail{position:static;width:100%;max-width:420px;flex:none}
   .devPanel,.playerPanel{width:100%;max-width:420px}
-  #hud{padding:0 8px}
-  .fcard{min-width:104px;gap:5px}
-  .fcard canvas{width:34px;height:34px}
-  .fd{font-size:17px}.fn{font-size:9px}.fs{font-size:8px}.fb{font-size:7px}
-}
-@media (max-height:480px){
-  .logo{font-size:clamp(44px,11vh,84px)}
-  .tag{margin:8px 0 10px}
-  .btn{padding:6px 16px 4px;margin:4px}
-  .blink{margin-top:8px}
-  #scr-setup{padding:4px 8px}
-  #scr-setup h2.sh{font-size:13px}
-  #scr-setup .opt{font-size:10px;padding:4px 7px 2px}
-  #scr-setup .btn{font-size:12px}
-  #grid{max-height:38vh}
+  #roomPanel{width:170px}
 }
 </style>
 </head>
@@ -250,6 +237,13 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
 </div>
 <button id="muteBtn" title="som">🔊</button>
 
+<!-- aba lateral da sala -->
+<div id="roomPanel">
+  <h4>🌐 SALA ONLINE</h4>
+  <div id="rpCode">----</div>
+  <div id="rpList"></div>
+</div>
+
 <div class="screen active" id="scr-title">
   <div id="titleBg" style="position:absolute;inset:0"></div>
   <h1 class="logo">PANCADÃO!</h1>
@@ -258,7 +252,7 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
   <button class="btn alt" id="btnOnline">🌐 SALAS ONLINE</button>
   <button class="btn alt" id="btnControls">🎮 CONTROLES</button>
   <button class="btn alt" id="btnHelp">COMO JOGAR</button>
-  <div class="blink">▼ SOCO LIVRE, SEM LIMITE · CONTROLE DE TOQUE COM FAIXA EXCLUSIVA ▼</div>
+  <div class="blink">▼ ONLINE: CRIE UMA SALA, COMPARTILHE O CÓDIGO ▼</div>
   <div class="ctrl-strip">
     <span><b>TECLADO 1</b> <kbd>WASD</kbd>+<kbd>F</kbd><kbd>G</kbd><kbd>H</kbd> <kbd>E</kbd> arma <kbd>Q</kbd> def</span>
     <span><b>TECLADO 2</b> <kbd>←↑↓→</kbd>+<kbd>J</kbd><kbd>K</kbd><kbd>L</kbd> <kbd>I</kbd> arma <kbd>O</kbd> def</span>
@@ -298,35 +292,19 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
   </div>
 </div>
 
+<!-- ONLINE: nickname + criar/entrar -->
 <div class="screen solid" id="scr-online">
   <h2 class="sh">🌐 SALAS ONLINE</h2>
-  <div id="olLobby" style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;align-items:flex-start">
-    <div class="devPanel" id="olRoomPanel">
-      <h3>SALA</h3>
-      <div id="olCreate">
-        <button class="btn small" id="btnCreate">CRIAR SALA</button>
-        <div style="margin:10px 0;display:flex;gap:6px;align-items:center;justify-content:center">
-          <input id="olCodeIn" maxlength="4" placeholder="CÓDIGO">
-          <button class="btn small alt" id="btnJoin">ENTRAR</button>
-        </div>
-      </div>
-      <div id="olInfo" style="display:none">
-        <div style="font-family:Bangers;font-size:36px;color:var(--ouro);text-align:center" id="olCode"></div>
-        <div id="olPlayers"></div>
-        <div id="olHostOpts"></div>
-        <div style="text-align:center">
-          <button class="btn small" id="btnStart" style="display:none">INICIAR PARTIDA</button>
-          <div id="olWait" style="display:none;font-size:12px;color:#9fd0ff">aguardando o host iniciar…</div>
-          <button class="btn small ghost" id="btnLeave">SAIR DA SALA</button>
-        </div>
-      </div>
+  <div class="devPanel" style="width:320px">
+    <h3>SEU NICKNAME</h3>
+    <input id="nickIn" maxlength="12" placeholder="digite seu nome">
+    <div style="font-size:10px;color:#8fa0d8;margin:4px 0 8px">Se deixar vazio, usaremos um nome genérico.</div>
+    <h3>ENTRAR NUMA SALA</h3>
+    <div style="display:flex;gap:6px;align-items:center;justify-content:center">
+      <input id="olCodeIn" maxlength="4" placeholder="CÓDIGO" style="width:110px">
+      <button class="btn small alt" id="btnJoin">ENTRAR</button>
     </div>
-    <div class="devPanel" id="olPickPanel" style="display:none;width:340px">
-      <h3>SEU LUTADOR</h3>
-      <div id="olChars" style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px"></div>
-      <h3 style="margin-top:8px">SEU CONTROLE</h3>
-      <div id="olDevices" class="devTabs"></div>
-    </div>
+    <div style="text-align:center;margin-top:10px"><button class="btn small" id="btnCreate">CRIAR SALA</button></div>
   </div>
   <div style="margin:10px 0 8px"><button class="btn ghost small" id="btnOnlineBack">◀ VOLTAR</button></div>
 </div>
@@ -388,11 +366,9 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
 
 <div class="screen solid" id="scr-help"><div id="helpBox">
   <h3>COMO JOGAR</h3>
-  Briga de plataforma estilo Brawlhalla: aumente o <b>% de dano</b> e arremesse todos pra fora da arena. Vence o time que sobrar (4 min). O <b>soco é livre</b>, sem limite nem recarga.
-  <h3>CELULAR</h3>
-  Escolha o controle <b>CELULAR</b>: durante a partida aparece uma <b>faixa exclusiva de botões embaixo</b> e o mapa fica um pouco menor acima dela, sem ser tampado.
+  Briga de plataforma estilo Brawlhalla: aumente o <b>% de dano</b> e arremesse todos pra fora da arena. Vence o time que sobrar (4 min). O <b>soco é livre</b>.
   <h3>ONLINE</h3>
-  <b>🌐 SALAS ONLINE</b>: crie uma sala (código de 4 letras) ou entre com o código; até 4 humanos simultâneos.
+  Crie uma sala (código de 4 letras) ou entre com o código. Informe seu <b>nickname</b>. O host configura tamanho/mapa/dificuldade e escolhe os lutadores na mesma tela do local, com uma <b>aba lateral</b> mostrando o código e os players conectados.
   <h3>DEFESA / ARMAS</h3>
   DEFESA segura 90% de frente (costas quebra). Armas caem a cada 20s (+30% dano).
   <div style="text-align:center;margin-top:16px"><button class="btn small" id="btnHelpBack">VOLTAR</button></div>
@@ -627,10 +603,10 @@ function addGamepadDevice(gp){
 addEventListener('gamepadconnected',e=>{initAudio();addGamepadDevice(e.gamepad);const d=DEVICES['gp'+e.gamepad.index];
  announce('🎮 '+d.label+' CONECTADO!'+((d.family==='PS2'||d.family==='GENÉRICO')?' BOTÃO 2 = PULAR/SELECIONAR':''));sfx('go');updateGpStatus();
  if($('#scr-controls').classList.contains('active'))renderControlsScreen();
- if($('#scr-online').classList.contains('active'))olRender();});
+ renderRoomPanel();});
 addEventListener('gamepaddisconnected',e=>{const k='gp'+e.gamepad.index;if(DEVICES[k]){DEVICES[k].online=false;announce('JOYSTICK '+DEVICES[k].label+' SAIU');}updateGpStatus();
  if($('#scr-controls').classList.contains('active'))renderControlsScreen();
- if($('#scr-online').classList.contains('active'))olRender();});
+ renderRoomPanel();});
 function updateGpStatus(){const el=$('#gpStatus');const on=Object.values(DEVICES).filter(d=>d.kind==='gp'&&d.online);
  if(!on.length){el.classList.remove('show');return;}el.classList.add('show');el.innerHTML='<b>🎮</b> '+on.map(d=>d.label).join(' · ');}
 function assignDevice(p,key){const prev=PLAYERS[p].device;if(prev===key)return;
@@ -716,7 +692,7 @@ const GP_ACTIONS=[['u','PULAR'],['atk','HIT'],['hvy','GOLPE FORTE'],['pow','PODE
 function devRowHTML(key){const d=DEVICES[key];const off=d.kind==='gp'&&!d.online;
  const badge=d.kind==='kb'?'TECLADO':d.kind==='touch'?'CELULAR':d.family;
  const bcls=d.kind==='kb'?'b-kb':d.kind==='touch'?'b-touch':famBadgeClass(d.family);
- return `<div class="devRow ${off?'off':''}" data-dev="${key}"><div class="ico">${d.kind==='kb'?'⌨️':d.kind==='touch'?'📱':''}</div><div class="tx"><div class="nm">${d.name}</div><div class="sub">${off?'desconectado':d.sub}</div><div class="press"></div></div><span class="badge ${bcls}">${badge}</span></div>`;}
+ return `<div class="devRow ${off?'off':''}" data-dev="${key}"><div class="ico">${d.kind==='kb'?'⌨️':d.kind==='touch'?'📱':''}</div><div class="tx"><div class="nm">${d.name}</div><div class="sub">${off?'desconectado':d.sub}</div></div><span class="badge ${bcls}">${badge}</span></div>`;}
 function buildPlayerPanel(p){
  const pl=PLAYERS[p];const d=DEVICES[pl.device]||DEVICES.kb1;
  const el=document.createElement('div');el.className='playerPanel';el.dataset.device=pl.device;
@@ -730,11 +706,10 @@ function buildPlayerPanel(p){
  let rows='';
  if(d.kind==='kb')rows=KB_ACTIONS.map(([a,n])=>`<div class="bindRow"><span class="lbl">${n}</span><button class="bindChip" data-dev="${pl.device}" data-action="${a}">${fmtKey(d.bind[a])}</button></div>`).join('');
  else if(d.kind==='gp')rows=`<div class="bindRow"><span class="lbl">MOVER</span><span class="bindChip static">ANALÓGICO + DIRECIONAL</span></div>`+GP_ACTIONS.map(([a,n])=>`<div class="bindRow"><span class="lbl">${n}</span><button class="bindChip" data-dev="${pl.device}" data-action="${a}">BOTÃO ${d.bind[a]}</button></div>`).join('')+((d.family==='PS2'||d.family==='GENÉRICO')?`<div class="warn" style="color:#9fd0ff">Troca automática ao conectar: botão 0 ↔ botão 2.</div>`:'');
- else rows=`<div class="bindRow"><span class="lbl">BOTÕES DE TOQUE</span><span class="bindChip static">FAIXA EMBAIXO NA PARTIDA</span></div><div class="warn" style="color:#9fd0ff">📱 Os botões aparecem numa faixa exclusiva embaixo, sem tampar o mapa.</div>`;
+ else rows=`<div class="bindRow"><span class="lbl">BOTÕES DE TOQUE</span><span class="bindChip static">FAIXA EMBAIXO NA PARTIDA</span></div><div class="warn" style="color:#9fd0ff">📱 Botões aparecem numa faixa exclusiva embaixo, sem tampar o mapa.</div>`;
  const shared=PLAYERS.filter(q=>q.device===pl.device).length>1;
  el.innerHTML=`<h3>JOGADOR ${p+1}</h3>${tabs}${rows}${shared?'<div class="warn">⚠ dividindo o mesmo dispositivo com outro jogador</div>':''}`+(d.kind!=='touch'?`<button class="restoreBtn" data-p="${p}">RESTAURAR PADRÃO</button>`:'');
- el.querySelectorAll('.devTab').forEach(b=>{b.onclick=()=>assignDevice(p,b.dataset.dev);
-  b.onmouseenter=()=>{const dv=DEVICES[b.dataset.dev];if(dv&&dv.kind==='gp'&&dv.online){try{const gp=navigator.getGamepads()[dv.index];gp&&gp.vibrationActuator&&gp.vibrationActuator.playEffect('dual-rumble',{duration:180,strongMagnitude:.6,weakMagnitude:.4});}catch(e){}}};});
+ el.querySelectorAll('.devTab').forEach(b=>{b.onclick=()=>assignDevice(p,b.dataset.dev);});
  el.querySelectorAll('.bindChip[data-action]').forEach(b=>b.onclick=()=>{const nome=b.closest('.bindRow').querySelector('.lbl').textContent;openBindDevice(b.dataset.dev,b.dataset.action,'CONFIGURAR: '+nome);});
  const rb=el.querySelector('.restoreBtn');
  if(rb)rb.onclick=()=>{if(d.kind==='kb')d.bind={...(pl.device==='kb1'?DEFAULT_KB1:DEFAULT_KB2)};else d.bind=defaultBindFor(d.family);sfx('sel');renderControlsScreen();};
@@ -748,20 +723,6 @@ function renderControlsScreen(){
  dp.innerHTML=html;wrap.appendChild(dp);
  for(let p=0;p<4;p++)wrap.appendChild(buildPlayerPanel(p));
  if(typeof uiRefresh==='function')uiRefresh();}
-function pollDeviceFlash(dt){
- if(!$('#scr-controls').classList.contains('active'))return;
- const gps=navigator.getGamepads?navigator.getGamepads():[];
- for(const key in DEVICES){const d=DEVICES[key];if(d.kind!=='gp')continue;
-  const gp=gps[d.index];let hit=-1;
-  if(gp&&d.online){for(let i=0;i<gp.buttons.length;i++){const pr=gp.buttons[i].pressed;if(pr&&!d._pb[i])hit=i;d._pb[i]=pr;}}
-  if(hit>=0){d.flash=1.4;d.lastBtn=hit;}
-  const row=document.querySelector('.devRow[data-dev="'+key+'"]');
-  if(row){if(d.flash>0){row.classList.add('flash');row.querySelector('.press').textContent='▶ botão '+d.lastBtn;}else{row.classList.remove('flash');row.querySelector('.press').textContent='';}}
-  const tab=document.querySelector('.devTab.on[data-dev="'+key+'"]');
-  if(tab)tab.style.boxShadow=d.flash>0?'0 0 16px #ffd23d':'';
-  const panel=document.querySelector('.playerPanel[data-device="'+key+'"]');
-  if(panel)panel.classList.toggle('flashP',d.flash>0);
-  if(d.flash>0)d.flash-=dt;}}
 
 const UI={idx:0,list:[],prev:{},hold:{},suppressUntil:0};
 function uiRefresh(){
@@ -1071,44 +1032,61 @@ function touchNeeded(){
  return touchHumanExists();}
 
 /* ===== ONLINE ===== */
-let NET={role:null,peer:null,conns:[],code:'',myIdx:0,hostCon:null,players:[],opts:{size:2,map:0,diff:1},myDevice:'kb2',myCh:'victor',myPrev:{},inAcc:0,snapAcc:0,snap:null,lastAnn:''};
+let NET={role:null,peer:null,conns:[],code:'',myIdx:0,hostCon:null,players:[],opts:{size:2,map:0,diff:1},myDevice:'kb2',myCh:'victor',nick:'',myPrev:{},inAcc:0,snapAcc:0,snap:null,lastAnn:'',assign:null};
 function olCodeGen(){const A='ABCDEFGHJKLMNPQRSTUVWXYZ';let s='';for(let i=0;i<4;i++)s+=A[ri(0,A.length-1)];return s;}
-function olReset(){NET.role=null;NET.conns=[];NET.hostCon=null;NET.players=[];NET.myIdx=0;NET.snap=null;}
+function olReset(){NET.role=null;NET.conns=[];NET.hostCon=null;NET.players=[];NET.myIdx=0;NET.snap=null;NET.assign=null;$('#roomPanel').classList.remove('show');}
+function olNick(){const v=($('#nickIn').value||'').trim();return v||('JOGADOR '+ri(10,99));}
+function renderRoomPanel(){
+ const on=!!NET.role;
+ $('#roomPanel').classList.toggle('show',on);
+ if(!on)return;
+ $('#rpCode').textContent=NET.code;
+ const list=$('#rpList');list.innerHTML='';
+ NET.players.slice().sort((a,b)=>a.idx-b.idx).forEach(p=>{
+  const d=document.createElement('div');d.className='rp';
+  const cvp=document.createElement('canvas');cvp.width=26;cvp.height=30;drawPortrait(cvp,CH[p.ch]||CH.victor,0);
+  d.appendChild(cvp);
+  const nm=document.createElement('div');nm.className='nm';nm.textContent=p.name+(p.idx===0?' (HOST)':'');
+  d.appendChild(nm);
+  const st=document.createElement('div');st.className='st';st.textContent='●';
+  d.appendChild(st);list.appendChild(d);});}
+function olBroadcastRoom(){NET.conns.forEach(c=>c.con.send({t:'room',players:NET.players,opts:NET.opts,code:NET.code}));renderRoomPanel();}
 function createRoom(){
  if(typeof Peer==='undefined'){announce('SEM CONEXÃO (PEERJS)');return;}
- NET.code=olCodeGen();NET.role='host';
- NET.players=[{idx:0,name:'HOST (VOCÊ)',ch:NET.myCh}];
+ NET.code=olCodeGen();NET.role='host';NET.nick=olNick();
+ NET.players=[{idx:0,name:NET.nick,ch:NET.myCh}];
  NET.peer=new Peer('pancadao-'+NET.code);
- NET.peer.on('open',()=>{olRender();announce('SALA '+NET.code+' CRIADA');});
+ NET.peer.on('open',()=>{renderRoomPanel();announce('SALA '+NET.code+' CRIADA');show('scr-setup');applyOnlineSetup();});
  NET.peer.on('connection',con=>{con.on('open',()=>{
    const idx=nextFreeIdx();if(idx<0){con.close();return;}
    NET.conns.push({con,idx});NET.players.push({idx,name:'CONVIDADO '+idx,ch:'victor'});
    con.on('data',d=>olHostData(con,idx,d));
    con.on('close',()=>olRemove(idx));
-   olRender();olBroadcastRoom();});});
- NET.peer.on('error',e=>announce('ERRO: '+e.type));
- olRender();}
-function nextFreeIdx(){for(let i=1;i<=3;i++){if(!NET.conns.some(c=>c.idx===i))return i;}return -1;}
+   olBroadcastRoom();});});
+ NET.peer.on('error',e=>announce('ERRO: '+e.type));}
 function joinRoom(){
  if(typeof Peer==='undefined'){announce('SEM CONEXÃO (PEERJS)');return;}
  const code=($('#olCodeIn').value||'').toUpperCase().trim();
  if(code.length<4){announce('CÓDIGO INVÁLIDO');return;}
- NET.code=code;NET.role='guest';
+ NET.code=code;NET.role='guest';NET.nick=olNick();
  NET.peer=new Peer();
  NET.peer.on('open',()=>{
   NET.hostCon=NET.peer.connect('pancadao-'+code,{reliable:true});
-  NET.hostCon.on('open',()=>{NET.myIdx=1;olRender();announce('CONECTADO À SALA '+code);});
+  NET.hostCon.on('open',()=>{NET.myIdx=1;NET.hostCon.send({t:'hello',name:NET.nick});renderRoomPanel();announce('CONECTADO À SALA '+code);});
   NET.hostCon.on('data',d=>olGuestData(d));
-  NET.hostCon.on('close',()=>{announce('HOST SAIU');goOnlineLobby();});});
+  NET.hostCon.on('close',()=>{announce('HOST SAIU');olReset();show('scr-online');});});
  NET.peer.on('error',e=>announce('ERRO: '+e.type));}
-function olRemove(idx){NET.conns=NET.conns.filter(c=>c.idx!==idx);NET.players=NET.players.filter(p=>p.idx!==idx);olRender();olBroadcastRoom();}
-function olBroadcastRoom(){NET.conns.forEach(c=>c.con.send({t:'room',players:NET.players,opts:NET.opts,code:NET.code}));}
+function nextFreeIdx(){for(let i=1;i<=3;i++){if(!NET.conns.some(c=>c.idx===i))return i;}return -1;}
+function olRemove(idx){NET.conns=NET.conns.filter(c=>c.idx!==idx);NET.players=NET.players.filter(p=>p.idx!==idx);olBroadcastRoom();}
 function olHostData(con,idx,d){
- if(d.t==='pick'){const p=NET.players.find(p=>p.idx===idx);if(p)p.ch=d.ch;olRender();olBroadcastRoom();}
+ if(d.t==='hello'){const p=NET.players.find(p=>p.idx===idx);if(p)p.name=d.name||('CONVIDADO '+idx);olBroadcastRoom();}
+ else if(d.t==='pick'){const p=NET.players.find(p=>p.idx===idx);if(p)p.ch=d.ch;olBroadcastRoom();}
  else if(d.t==='in'){const f=G.fighters.find(f=>f.human&&f.playerIdx===idx);if(f)f.netRaw=d.raw;}
  else if(d.t==='leave'){olRemove(idx);}}
 function olGuestData(d){
- if(d.t==='room'){NET.players=d.players;NET.opts=d.opts;NET.code=d.code;olRender();}
+ if(d.t==='room'){NET.players=d.players;NET.opts=d.opts;NET.code=d.code;renderRoomPanel();}
+ else if(d.t==='toSetup'){show('scr-setup');}
+ else if(d.t==='toSelect'){openSelectOnline();}
  else if(d.t==='start'){startMatch(d.cfg);G.net='guest';G.myIdx=d.yourIdx;hideAllScreens();$('#hud').classList.remove('hide');}
  else if(d.t==='snap'){NET.snap=d.s;}
  else if(d.t==='over'){G.winner=d.winner;G.state='over';showResult();}
@@ -1145,57 +1123,33 @@ function guestUpdate(dt){
  G.drops=(s.d||[]).map(d=>({x:d.x,y:d.y,t:0}));
  G.ants=(s.a||[]).map(a=>({x:a.x,y:a.y,step:0}));
  G.walls=(s.w||[]).map(w=>({x:w.x,y:w.y,w:w.w,h:w.h,t:1,cx:w.x+w.w/2,cds:{},owner:null}));}
-function hostStart(){
+function onlineAssign(size){
  const humans=NET.players.length;
- const mode={1:'1p',2:'2p',3:'3p',4:'4p'}[humans]||'2p';
- const assign=computePlayerAssign(mode,NET.opts.size);
- const teams=[new Array(NET.opts.size).fill(null),new Array(NET.opts.size).fill(null)];
- for(let t=0;t<2;t++)for(let i=0;i<NET.opts.size;i++){
-  const a=assign[t*NET.opts.size+i];
-  if(a&&a.human){const pl=NET.players[a.playerIdx];teams[t][i]=pl?pl.ch:'victor';}
-  else teams[t][i]=randId();}
- const cfg={size:NET.opts.size,mode,map:NET.opts.map,diff:NET.opts.diff,teams,playerAssign:assign,online:true};
+ const out=new Array(size*2).fill(null);
+ const order=[0,size,1,size+1];
+ for(let k=0;k<humans&&k<order.length;k++){if(order[k]<size*2)out[order[k]]={human:true,playerIdx:k};}
+ return out;}
+function applyOnlineSetup(){
+ // host online: esconde modo (humano = conectados) e sincroniza opts
+ $('#modeRow').style.display='none';
+ SEL.size=NET.opts.size;SEL.map=NET.opts.map;SEL.diff=NET.opts.diff;
+ syncSetupUI();}
+function syncSetupUI(){
+ document.querySelectorAll('#sizeRow .opt').forEach(o=>o.classList.toggle('on',+o.dataset.s===SEL.size));
+ document.querySelectorAll('#mapRow .opt').forEach(o=>o.classList.toggle('on',+o.dataset.map===SEL.map));
+ document.querySelectorAll('#diffRow .opt').forEach(o=>o.classList.toggle('on',+o.dataset.d===SEL.diff));}
+function openSelectOnline(){
+ NET.assign=onlineAssign(SEL.size);
+ SEL.mode='cpu'; // host drafta todos os slots, mesma tela do local
+ openSelect();
+ renderRoomPanel();}
+function hostStart(){
+ const assign=NET.assign||onlineAssign(SEL.size);
+ const cfg={size:SEL.size,mode:'cpu',map:SEL.map,diff:SEL.diff,teams:SEL.teams,playerAssign:assign,online:true};
  startMatch(cfg);
  G.net='host';G.remote=new Set(NET.players.filter(p=>p.idx>0).map(p=>p.idx));
  NET.conns.forEach(c=>c.con.send({t:'start',cfg,yourIdx:c.idx}));}
-function goOnlineLobby(){G.state='idle';show('scr-online');$('#hud').classList.add('hide');olRender();}
-function optGroup(label,vals,cur,k,labels){return `<div style="margin:4px 0"><small style="color:#9fb0e8">${label}</small> `+vals.map((v,i)=>`<button class="optmini ${v===cur?'on':''}" data-k="${k}" data-v="${v}">${labels?labels[i]:v}</button>`).join(' ')+`</div>`;}
-function olRender(){
- const inRoom=!!NET.role;
- $('#olCreate').style.display=inRoom?'none':'';
- $('#olInfo').style.display=inRoom?'':'none';
- $('#olPickPanel').style.display=inRoom?'':'none';
- if(!inRoom)return;
- $('#olCode').textContent=NET.code;
- $('#btnStart').style.display=NET.role==='host'?'':'none';
- $('#olWait').style.display=NET.role==='guest'?'':'none';
- const pl=$('#olPlayers');pl.innerHTML='';
- NET.players.slice().sort((a,b)=>a.idx-b.idx).forEach(p=>{
-  const d=document.createElement('div');d.style.cssText='display:flex;gap:8px;align-items:center;margin:6px 0';
-  const cvp=document.createElement('canvas');cvp.width=40;cvp.height=48;drawPortrait(cvp,CH[p.ch]||CH.victor,0);
-  d.appendChild(cvp);
-  const tx=document.createElement('div');tx.innerHTML=`<b>P${p.idx+1}</b> ${p.name}<br><small>${(CH[p.ch]||{}).nome||p.ch}</small>`;
-  d.appendChild(tx);pl.appendChild(d);});
- const ho=$('#olHostOpts');
- if(NET.role==='host'){
-  ho.innerHTML=optGroup('TIME',[2,3,4],NET.opts.size,'size')+optGroup('MAPA',[0,1,2,3,4],NET.opts.map,'map',['CIDADE','PRAIA','ESCRIT','ESCOLA','NEVE'])+optGroup('CPU',[0,1,2],NET.opts.diff,'diff',['FÁCIL','NORMAL','DIFÍCIL']);
-  ho.querySelectorAll('.optmini').forEach(b=>b.onclick=()=>{NET.opts[b.dataset.k]=+b.dataset.v;olRender();olBroadcastRoom();});
- }else{
-  ho.innerHTML=`<div style="font-size:11px;color:#9fb0e8">Time ${NET.opts.size}v${NET.opts.size} · Mapa ${['CIDADE','PRAIA','ESCRITÓRIO','ESCOLA','NEVE'][NET.opts.map]} · CPU ${['FÁCIL','NORMAL','DIFÍCIL'][NET.opts.diff]}</div>`;}
- olBuildDevices();}
-function olBuildDevices(){
- const box=$('#olDevices');box.innerHTML='';
- const ks=['kb1','kb2','touch',...Object.keys(DEVICES).filter(k=>DEVICES[k].kind==='gp'&&DEVICES[k].online)];
- ks.forEach(k=>{const dv=DEVICES[k];const b=document.createElement('button');b.className='devTab '+(NET.myDevice===k?'on':'');
-  b.textContent=(dv.kind==='kb'?(k==='kb1'?'TEC1':'TEC2'):dv.kind==='touch'?'CELULAR':dv.label);
-  b.onclick=()=>{NET.myDevice=k;if(NET.role==='host')PLAYERS[0].device=k;olBuildDevices();};
-  box.appendChild(b);});}
-function olBuildChars(){const box=$('#olChars');box.innerHTML='';ROSTER.forEach(ch=>{
- const c=document.createElement('canvas');c.width=44;c.height=52;c.style.cursor='pointer';c.title=ch.nome;drawPortrait(c,ch,0);
- c.onclick=()=>{NET.myCh=ch.id;
-  if(NET.role==='host'){const p=NET.players.find(p=>p.idx===0);if(p)p.ch=ch.id;olBroadcastRoom();olRender();}
-  else if(NET.hostCon)NET.hostCon.send({t:'pick',ch:ch.id});};
- box.appendChild(c);});}
+function goOnlineLobby(){G.state='idle';show('scr-online');$('#hud').classList.add('hide');renderRoomPanel();}
 
 let SEL={size:2,mode:'1p',map:0,diff:1,teams:[[],[]],_touchPick:false};
 let PICK=null,GRID_ELS=[];
@@ -1214,16 +1168,16 @@ function computePlayerAssign(mode,size){
  return out;}
 function openSelect(){
  PICK=null;G.state='idle';G.resultShown=true;$('#hud').classList.add('hide');
- const assign=computePlayerAssign(SEL.mode,SEL.size);
+ const assign=(G.net==='host'&&NET.assign)?NET.assign:computePlayerAssign(SEL.mode,SEL.size);
  SEL.teams=[new Array(SEL.size).fill(null),new Array(SEL.size).fill(null)];
- SEL._touchPick=assign.some(a=>a&&a.human&&DEVICES[PLAYERS[a.playerIdx].device].kind==='touch');
+ SEL._touchPick=assign.some(a=>a&&a.human&&DEVICES[PLAYERS[a.playerIdx].device]&&DEVICES[PLAYERS[a.playerIdx].device].kind==='touch');
  const slots=[];
  for(let t=0;t<2;t++)for(let i=0;i<SEL.size;i++)slots.push({team:t,i,human:!!(assign[t*SEL.size+i]&&assign[t*SEL.size+i].human),playerIdx:assign[t*SEL.size+i]?assign[t*SEL.size+i].playerIdx:-1});
  const humans=slots.filter(s=>s.human).sort((a,b)=>a.playerIdx-b.playerIdx);
  const cpus=slots.filter(s=>!s.human);
  const ed=humans.length?humans[0].playerIdx:0;
  PICK={assign,slots,humans,cpus,locked:{},cpuCur:0,done:false,history:[],openAt:performance.now(),
-  phase:humans.length?'human':(cpus.length?'cpu':'finish'),hcur:{},ccur:{idx:0,prev:rawNavFor(ed),hold:{},active:false}};
+  phase:humans.length&&G.net!=='host'?'human':(cpus.length?'cpu':'finish'),hcur:{},ccur:{idx:0,prev:rawNavFor(ed),hold:{},active:false}};
  humans.forEach(h=>PICK.hcur[h.playerIdx]={idx:0,prev:rawNavFor(h.playerIdx),hold:{},active:false});
  GRID_ELS.forEach(el=>el.classList.remove('cur0','cur1','cur2','cur3','curC'));
  hideDetail();renderTrays();refreshCardTags();pickStatus();
@@ -1277,7 +1231,10 @@ function launchVS(){hideAllScreens();$('#scr-vs').classList.add('active');
  const vsCvs=[...mk(0,SEL.teams[0]),...mk(1,SEL.teams[1])];
  setTimeout(()=>{vsCvs.forEach(o=>drawPortrait(o.cv,o.ch,performance.now()/1000));},30);
  sfx('go');
- setTimeout(()=>{startMatch({size:SEL.size,mode:SEL.mode,map:SEL.map,diff:SEL.diff,teams:[SEL.teams[0].slice(),SEL.teams[1].slice()],playerAssign:PICK.assign});},2000);}
+ setTimeout(()=>{
+  if(G.net==='host'){hostStart();}
+  else startMatch({size:SEL.size,mode:SEL.mode,map:SEL.map,diff:SEL.diff,teams:[SEL.teams[0].slice(),SEL.teams[1].slice()],playerAssign:PICK.assign});
+ },2000);}
 function paintCursors(){GRID_ELS.forEach(el=>el.classList.remove('cur0','cur1','cur2','cur3','curC'));
  if(!PICK||PICK.done)return;
  if(PICK.phase==='human')for(const h of PICK.humans){if(PICK.locked[h.playerIdx])continue;
@@ -1321,9 +1278,10 @@ function updatePick(){
    pollCursor(cur,rawNavFor(h.playerIdx),(dx,dy)=>moveCursor(cur,dx,dy),()=>{cur.active=true;humanPickEl(focusedEl(cur),h);},()=>selectBack());}
   afterHumanCheck();}
  if(PICK.phase==='cpu'){
-  const ed=PICK.humans.length?PICK.humans[0].playerIdx:0;
+  const ed=PICK.humans.length?humans0():0;
   pollCursor(PICK.ccur,rawNavFor(ed),(dx,dy)=>moveCursor(PICK.ccur,dx,dy),()=>{PICK.ccur.active=true;cpuPickEl(focusedEl(PICK.ccur));},()=>selectBack());
   paintCursors();}}
+function humans0(){return PICK.humans.length?PICK.humans[0].playerIdx:0;}
 
 function matchUpdate(dt){
  if(G.net==='guest'){guestUpdate(dt);return;}
@@ -1644,25 +1602,25 @@ function show(id){SCREENS.forEach(s=>$('#'+s).classList.toggle('active',s===id))
 function hideAllScreens(){SCREENS.forEach(s=>$('#'+s).classList.remove('active'));UI.list=[];}
 function togglePause(){paused=!paused;$('#scr-pause').classList.toggle('active',paused);uiRefresh();}
 const gridCards={};
-$('#btnPlay').onclick=()=>{initAudio();sfx('sel');show('scr-setup');};
+$('#btnPlay').onclick=()=>{initAudio();G.net=null;$('#modeRow').style.display='';sfx('sel');show('scr-setup');};
 $('#btnOnline').onclick=()=>{initAudio();sfx('sel');show('scr-online');};
 $('#btnHelp').onclick=()=>{sfx('sel');show('scr-help');};
 $('#btnControls').onclick=()=>{sfx('sel');renderControlsScreen();show('scr-controls');};
 $('#btnHelpBack').onclick=()=>show('scr-title');
-$('#btnBack1').onclick=()=>show('scr-title');
+$('#btnBack1').onclick=()=>{if(NET.role){olReset();}show('scr-title');};
 $('#btnGoControls').onclick=()=>{sfx('sel');renderControlsScreen();show('scr-controls');};
 $('#btnCtrlBack').onclick=()=>show('scr-title');
 $('#btnBack2').onclick=()=>selectBack();
-$('#btnOnlineBack').onclick=()=>show('scr-title');
+$('#btnOnlineBack').onclick=()=>{olReset();show('scr-title');};
 $('#btnCreate').onclick=()=>{initAudio();createRoom();};
 $('#btnJoin').onclick=()=>{initAudio();joinRoom();};
-$('#btnLeave').onclick=()=>{if(NET.role==='guest'&&NET.hostCon)NET.hostCon.send({t:'leave'});if(NET.peer)NET.peer.destroy();olReset();olRender();};
-$('#btnStart').onclick=()=>{hostStart();};
 document.querySelectorAll('#modeRow .opt').forEach(o=>o.onclick=()=>{document.querySelectorAll('#modeRow .opt').forEach(x=>x.classList.remove('on'));o.classList.add('on');SEL.mode=o.dataset.m;sfx('sel');});
-document.querySelectorAll('#sizeRow .opt').forEach(o=>o.onclick=()=>{document.querySelectorAll('#sizeRow .opt').forEach(x=>x.classList.remove('on'));o.classList.add('on');SEL.size=+o.dataset.s;sfx('sel');});
-document.querySelectorAll('#mapRow .opt').forEach(o=>o.onclick=()=>{document.querySelectorAll('#mapRow .opt').forEach(x=>x.classList.remove('on'));o.classList.add('on');SEL.map=+o.dataset.map;sfx('sel');});
-document.querySelectorAll('#diffRow .opt').forEach(o=>o.onclick=()=>{document.querySelectorAll('#diffRow .opt').forEach(x=>x.classList.remove('on'));o.classList.add('on');SEL.diff=+o.dataset.d;sfx('sel');});
-$('#btnNext').onclick=()=>{sfx('sel');openSelect();};
+document.querySelectorAll('#sizeRow .opt').forEach(o=>o.onclick=()=>{document.querySelectorAll('#sizeRow .opt').forEach(x=>x.classList.remove('on'));o.classList.add('on');SEL.size=+o.dataset.s;if(NET.role==='host'){NET.opts.size=SEL.size;olBroadcastRoom();}sfx('sel');});
+document.querySelectorAll('#mapRow .opt').forEach(o=>o.onclick=()=>{document.querySelectorAll('#mapRow .opt').forEach(x=>x.classList.remove('on'));o.classList.add('on');SEL.map=+o.dataset.map;if(NET.role==='host'){NET.opts.map=SEL.map;olBroadcastRoom();}sfx('sel');});
+document.querySelectorAll('#diffRow .opt').forEach(o=>o.onclick=()=>{document.querySelectorAll('#diffRow .opt').forEach(x=>x.classList.remove('on'));o.classList.add('on');SEL.diff=+o.dataset.d;if(NET.role==='host'){NET.opts.diff=SEL.diff;olBroadcastRoom();}sfx('sel');});
+$('#btnNext').onclick=()=>{sfx('sel');
+ if(NET.role==='host'){NET.conns.forEach(c=>c.con.send({t:'toSelect'}));openSelectOnline();}
+ else openSelect();};
 $('#btnAuto').onclick=()=>{if(!PICK||PICK.done)return;fillRemainingRandom();
  if(PICK.phase==='human')PICK.humans.forEach(h=>PICK.locked[h.playerIdx]=true);
  if(PICK.phase==='cpu')PICK.cpuCur=PICK.cpus.length;
@@ -1723,7 +1681,6 @@ $('#btnResume').onclick=()=>togglePause();
 $('#btnQuit').onclick=()=>{paused=false;$('#scr-pause').classList.remove('active');setupAttract();show('scr-title');};
 
 buildGrid();
-olBuildChars();
 renderControlsScreen();
 setupAttract();
 uiRefresh();
@@ -1733,8 +1690,6 @@ function loop(ts){
  if(!paused)matchUpdate(dt);
  render();
  updateHUD();
- pollDeviceFlash(dt);
- pollPause();
  menuNav();
  updatePick();
  if(G.net==='host'&&(G.state==='fight'||G.state==='count'||G.state==='over')){NET.snapAcc+=dt;if(NET.snapAcc>0.05){NET.snapAcc=0;sendSnap();}}
