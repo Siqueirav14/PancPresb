@@ -116,7 +116,7 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
 .card.deny{animation:shakeX .3s}
 @keyframes shakeX{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 .card.curC{box-shadow:0 0 0 3px #ffffff,0 8px 0 #0006;border-color:#fff}
-#detail{flex:0 0 250px;width:250px;align-self:flex-start;position:sticky;top:0;background:#0e1230f2;border:3px solid var(--borda);border-radius:12px;padding:12px;box-shadow:8px 8px 0 #0009;transition:border-color .2s}
+#detail{flex:0 0 250px;width:250px;align-self:flex-start;position:sticky;top:0;background:#0e1230f2;border:3px solid var(--borda);border-radius:12px;padding:12px;box-shadow:8px 8px 0 #0009}
 #detail.show{border-color:var(--ouro)}
 #dEmpty{color:#7e8cc4;font-size:13px;text-align:center;padding:34px 8px;line-height:1.6}
 #dEmpty b{color:#ffd23d}
@@ -131,7 +131,6 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
 #dPow p{font-size:11.5px;color:#d9c9f5;margin-top:2px}
 #dWp{margin-top:6px;font-size:11.5px;color:#9fd0ff}
 #dWp b{color:var(--ouro)}
-/* aba lateral da sala online */
 #roomPanel{position:fixed;left:12px;top:60px;width:210px;z-index:45;background:#0e1230f5;border:3px solid var(--ouro);border-radius:12px;padding:10px;box-shadow:6px 6px 0 #0009;display:none}
 #roomPanel.show{display:block}
 #roomPanel h4{font-family:Bangers;font-size:16px;color:var(--ouro);letter-spacing:1px}
@@ -237,7 +236,6 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
 </div>
 <button id="muteBtn" title="som">🔊</button>
 
-<!-- aba lateral da sala -->
 <div id="roomPanel">
   <h4>🌐 SALA ONLINE</h4>
   <div id="rpCode">----</div>
@@ -252,7 +250,7 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
   <button class="btn alt" id="btnOnline">🌐 SALAS ONLINE</button>
   <button class="btn alt" id="btnControls">🎮 CONTROLES</button>
   <button class="btn alt" id="btnHelp">COMO JOGAR</button>
-  <div class="blink">▼ ONLINE: CRIE UMA SALA, COMPARTILHE O CÓDIGO ▼</div>
+  <div class="blink">▼ NO CELULAR OS BOTÕES DE LUTA APARECEM EMBAIXO ▼</div>
   <div class="ctrl-strip">
     <span><b>TECLADO 1</b> <kbd>WASD</kbd>+<kbd>F</kbd><kbd>G</kbd><kbd>H</kbd> <kbd>E</kbd> arma <kbd>Q</kbd> def</span>
     <span><b>TECLADO 2</b> <kbd>←↑↓→</kbd>+<kbd>J</kbd><kbd>K</kbd><kbd>L</kbd> <kbd>I</kbd> arma <kbd>O</kbd> def</span>
@@ -292,13 +290,12 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
   </div>
 </div>
 
-<!-- ONLINE: nickname + criar/entrar -->
 <div class="screen solid" id="scr-online">
   <h2 class="sh">🌐 SALAS ONLINE</h2>
   <div class="devPanel" style="width:320px">
     <h3>SEU NICKNAME</h3>
     <input id="nickIn" maxlength="12" placeholder="digite seu nome">
-    <div style="font-size:10px;color:#8fa0d8;margin:4px 0 8px">Se deixar vazio, usaremos um nome genérico.</div>
+    <div style="font-size:10px;color:#8fa0d8;margin:4px 0 8px">Se deixar vazio, usaremos um nome genérico. No celular, os botões de toque aparecem sozinhos na partida.</div>
     <h3>ENTRAR NUMA SALA</h3>
     <div style="display:flex;gap:6px;align-items:center;justify-content:center">
       <input id="olCodeIn" maxlength="4" placeholder="CÓDIGO" style="width:110px">
@@ -368,7 +365,7 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
   <h3>COMO JOGAR</h3>
   Briga de plataforma estilo Brawlhalla: aumente o <b>% de dano</b> e arremesse todos pra fora da arena. Vence o time que sobrar (4 min). O <b>soco é livre</b>.
   <h3>ONLINE</h3>
-  Crie uma sala (código de 4 letras) ou entre com o código. Informe seu <b>nickname</b>. O host configura tamanho/mapa/dificuldade e escolhe os lutadores na mesma tela do local, com uma <b>aba lateral</b> mostrando o código e os players conectados.
+  Crie uma sala (código de 4 letras) ou entre com o código, informando seu <b>nickname</b>. O host configura tamanho/mapa/dificuldade e escolhe os lutadores na mesma tela do local, com a <b>aba lateral</b> mostrando o código e os players. No <b>celular</b>, os botões de luta aparecem embaixo automaticamente.
   <h3>DEFESA / ARMAS</h3>
   DEFESA segura 90% de frente (costas quebra). Armas caem a cada 20s (+30% dano).
   <div style="text-align:center;margin-top:16px"><button class="btn small" id="btnHelpBack">VOLTAR</button></div>
@@ -645,7 +642,7 @@ function readInputForPlayer(pi,f){
  const pl=PLAYERS[pi];
  if(G.net==='host'&&G.remote&&G.remote.has(pi))return fromNetRaw(f);
  let dev;
- if(G.net==='guest'&&pi===G.myIdx)dev=DEVICES[NET.myDevice]||DEVICES.kb2;
+ if(G.net==='guest'&&pi===G.myIdx)dev=DEVICES[NET.myDevice]||DEVICES.touch;
  else dev=DEVICES[(pl&&pl.device)||'kb1'];
  let raw=null;
  if(dev.kind==='kb'){const b=dev.bind;raw={l:!!keys[b.l],r:!!keys[b.r],u:!!keys[b.u],d:!!keys[b.d],atk:!!keys[b.atk],hvy:!!keys[b.hvy],pow:!!keys[b.pow],wp:!!keys[b.wp],def:!!keys[b.def]};}
@@ -706,7 +703,7 @@ function buildPlayerPanel(p){
  let rows='';
  if(d.kind==='kb')rows=KB_ACTIONS.map(([a,n])=>`<div class="bindRow"><span class="lbl">${n}</span><button class="bindChip" data-dev="${pl.device}" data-action="${a}">${fmtKey(d.bind[a])}</button></div>`).join('');
  else if(d.kind==='gp')rows=`<div class="bindRow"><span class="lbl">MOVER</span><span class="bindChip static">ANALÓGICO + DIRECIONAL</span></div>`+GP_ACTIONS.map(([a,n])=>`<div class="bindRow"><span class="lbl">${n}</span><button class="bindChip" data-dev="${pl.device}" data-action="${a}">BOTÃO ${d.bind[a]}</button></div>`).join('')+((d.family==='PS2'||d.family==='GENÉRICO')?`<div class="warn" style="color:#9fd0ff">Troca automática ao conectar: botão 0 ↔ botão 2.</div>`:'');
- else rows=`<div class="bindRow"><span class="lbl">BOTÕES DE TOQUE</span><span class="bindChip static">FAIXA EMBAIXO NA PARTIDA</span></div><div class="warn" style="color:#9fd0ff">📱 Botões aparecem numa faixa exclusiva embaixo, sem tampar o mapa.</div>`;
+ else rows=`<div class="bindRow"><span class="lbl">BOTÕES DE TOQUE</span><span class="bindChip static">FAIXA EMBAIXO NA PARTIDA</span></div><div class="warn" style="color:#9fd0ff">📱 Os botões aparecem numa faixa exclusiva embaixo, sem tampar o mapa.</div>`;
  const shared=PLAYERS.filter(q=>q.device===pl.device).length>1;
  el.innerHTML=`<h3>JOGADOR ${p+1}</h3>${tabs}${rows}${shared?'<div class="warn">⚠ dividindo o mesmo dispositivo com outro jogador</div>':''}`+(d.kind!=='touch'?`<button class="restoreBtn" data-p="${p}">RESTAURAR PADRÃO</button>`:'');
  el.querySelectorAll('.devTab').forEach(b=>{b.onclick=()=>assignDevice(p,b.dataset.dev);});
@@ -850,7 +847,7 @@ class Fighter{
    else{for(let i=0;i<G.drops.length;i++){const d=G.drops[i];
     if(Math.abs(this.x-d.x)<70&&Math.abs(this.y-d.y)<100){this.weapon=true;G.drops.splice(i,1);pop(this.x,this.y-125,'ARMADO: '+this.ch.arma,'#ffd23d',20);sfx('reload');break;}}}}
   if(!locked&&!this.atk&&!this.defending){
-   if(this.abuf>0){this.atk={type:'l',t:0,done:false};this.abuf=0;if(this.onG)this.vx+=this.face*50;}
+   if(this.abuf>0&&this.hitAmmo>0){this.atk={type:'l',t:0,done:false};this.abuf=0;if(this.onG)this.vx+=this.face*50;}
    else if(inp.hvy){this.atk={type:'h',t:0,done:false};if(this.onG)this.vx+=this.face*70;}}
   if(inp.pow&&!locked&&this.powerCd<=0&&!this.atk&&!this.defending)callPower(this);
   if(this.atk){const a=this.atk,T=ATK[a.type];a.t+=dt;
@@ -1023,12 +1020,22 @@ function setupAttract(){
  const ids=ROSTER.map(r=>r.id).sort(()=>Math.random()-.5).slice(0,4);
  startMatch({size:2,mode:'cpu',map:ri(0,MAPS.length-1),diff:1,teams:[[ids[0],ids[1]],[ids[2],ids[3]]],silent:true});
  G.attract=true;G.state='fight';$('#hud').classList.add('hide');}
+
+/* ===== detecção de toque (CORRIGIDO p/ online) ===== */
+function isTouchCapable(){return ('ontouchstart' in window)||navigator.maxTouchPoints>0;}
+function localControlsHuman(){
+ return G.fighters.some(f=>{
+  if(!f.human||f.playerIdx<0)return false;
+  if(G.net==='guest')return f.playerIdx===G.myIdx;
+  if(G.net==='host')return !(G.remote&&G.remote.has(f.playerIdx));
+  return true;});}
 function touchHumanExists(){return G.fighters.some(f=>f.human&&f.playerIdx>=0&&PLAYERS[f.playerIdx]&&DEVICES[PLAYERS[f.playerIdx].device]&&DEVICES[PLAYERS[f.playerIdx].device].kind==='touch');}
 function touchNeeded(){
  if(paused)return false;
  if(SCREENS.some(s=>$('#'+s).classList.contains('active')))return false;
  if(G.attract)return false;
- if(G.net==='guest')return !!(DEVICES[NET.myDevice]&&DEVICES[NET.myDevice].kind==='touch');
+ if(!localControlsHuman())return false;
+ if(isTouchCapable())return true;      // no celular, sempre mostra os botões de luta
  return touchHumanExists();}
 
 /* ===== ONLINE ===== */
@@ -1050,10 +1057,10 @@ function renderRoomPanel(){
   d.appendChild(nm);
   const st=document.createElement('div');st.className='st';st.textContent='●';
   d.appendChild(st);list.appendChild(d);});}
-function olBroadcastRoom(){NET.conns.forEach(c=>c.con.send({t:'room',players:NET.players,opts:NET.opts,code:NET.code}));renderRoomPanel();}
 function createRoom(){
  if(typeof Peer==='undefined'){announce('SEM CONEXÃO (PEERJS)');return;}
  NET.code=olCodeGen();NET.role='host';NET.nick=olNick();
+ if(isTouchCapable()&&PLAYERS[0].device.startsWith('kb'))PLAYERS[0].device='touch'; // host no celular usa toque
  NET.players=[{idx:0,name:NET.nick,ch:NET.myCh}];
  NET.peer=new Peer('pancadao-'+NET.code);
  NET.peer.on('open',()=>{renderRoomPanel();announce('SALA '+NET.code+' CRIADA');show('scr-setup');applyOnlineSetup();});
@@ -1069,6 +1076,7 @@ function joinRoom(){
  const code=($('#olCodeIn').value||'').toUpperCase().trim();
  if(code.length<4){announce('CÓDIGO INVÁLIDO');return;}
  NET.code=code;NET.role='guest';NET.nick=olNick();
+ if(isTouchCapable())NET.myDevice='touch'; // convidado no celular usa toque
  NET.peer=new Peer();
  NET.peer.on('open',()=>{
   NET.hostCon=NET.peer.connect('pancadao-'+code,{reliable:true});
@@ -1085,7 +1093,6 @@ function olHostData(con,idx,d){
  else if(d.t==='leave'){olRemove(idx);}}
 function olGuestData(d){
  if(d.t==='room'){NET.players=d.players;NET.opts=d.opts;NET.code=d.code;renderRoomPanel();}
- else if(d.t==='toSetup'){show('scr-setup');}
  else if(d.t==='toSelect'){openSelectOnline();}
  else if(d.t==='start'){startMatch(d.cfg);G.net='guest';G.myIdx=d.yourIdx;hideAllScreens();$('#hud').classList.remove('hide');}
  else if(d.t==='snap'){NET.snap=d.s;}
@@ -1100,7 +1107,7 @@ function sendSnap(){
   w:G.walls.map(w=>({x:w.x,y:w.y,w:w.w,h:w.h}))};
  NET.conns.forEach(c=>c.con.send({t:'snap',s}));}
 function sendIn(){
- const dev=DEVICES[NET.myDevice]||DEVICES.kb2;
+ const dev=DEVICES[NET.myDevice]||DEVICES.touch;
  const held=readHeld(dev);
  const raw={l:held.l,r:held.r,d:held.d,def:held.def,
   u:held.u&&!NET.myPrev.u,atk:held.atk&&!NET.myPrev.atk,hvy:held.hvy&&!NET.myPrev.hvy,pow:held.pow&&!NET.myPrev.pow,wp:held.wp&&!NET.myPrev.wp};
@@ -1130,7 +1137,6 @@ function onlineAssign(size){
  for(let k=0;k<humans&&k<order.length;k++){if(order[k]<size*2)out[order[k]]={human:true,playerIdx:k};}
  return out;}
 function applyOnlineSetup(){
- // host online: esconde modo (humano = conectados) e sincroniza opts
  $('#modeRow').style.display='none';
  SEL.size=NET.opts.size;SEL.map=NET.opts.map;SEL.diff=NET.opts.diff;
  syncSetupUI();}
@@ -1140,10 +1146,11 @@ function syncSetupUI(){
  document.querySelectorAll('#diffRow .opt').forEach(o=>o.classList.toggle('on',+o.dataset.d===SEL.diff));}
 function openSelectOnline(){
  NET.assign=onlineAssign(SEL.size);
- SEL.mode='cpu'; // host drafta todos os slots, mesma tela do local
+ SEL.mode='cpu';
  openSelect();
  renderRoomPanel();}
 function hostStart(){
+ if(isTouchCapable()&&PLAYERS[0].device.startsWith('kb'))PLAYERS[0].device='touch';
  const assign=NET.assign||onlineAssign(SEL.size);
  const cfg={size:SEL.size,mode:'cpu',map:SEL.map,diff:SEL.diff,teams:SEL.teams,playerAssign:assign,online:true};
  startMatch(cfg);
@@ -1170,7 +1177,7 @@ function openSelect(){
  PICK=null;G.state='idle';G.resultShown=true;$('#hud').classList.add('hide');
  const assign=(G.net==='host'&&NET.assign)?NET.assign:computePlayerAssign(SEL.mode,SEL.size);
  SEL.teams=[new Array(SEL.size).fill(null),new Array(SEL.size).fill(null)];
- SEL._touchPick=assign.some(a=>a&&a.human&&DEVICES[PLAYERS[a.playerIdx].device]&&DEVICES[PLAYERS[a.playerIdx].device].kind==='touch');
+ SEL._touchPick=assign.some(a=>a&&a.human&&(DEVICES[PLAYERS[a.playerIdx].device].kind==='touch'||isTouchCapable()));
  const slots=[];
  for(let t=0;t<2;t++)for(let i=0;i<SEL.size;i++)slots.push({team:t,i,human:!!(assign[t*SEL.size+i]&&assign[t*SEL.size+i].human),playerIdx:assign[t*SEL.size+i]?assign[t*SEL.size+i].playerIdx:-1});
  const humans=slots.filter(s=>s.human).sort((a,b)=>a.playerIdx-b.playerIdx);
@@ -1278,10 +1285,9 @@ function updatePick(){
    pollCursor(cur,rawNavFor(h.playerIdx),(dx,dy)=>moveCursor(cur,dx,dy),()=>{cur.active=true;humanPickEl(focusedEl(cur),h);},()=>selectBack());}
   afterHumanCheck();}
  if(PICK.phase==='cpu'){
-  const ed=PICK.humans.length?humans0():0;
+  const ed=PICK.humans.length?PICK.humans[0].playerIdx:0;
   pollCursor(PICK.ccur,rawNavFor(ed),(dx,dy)=>moveCursor(PICK.ccur,dx,dy),()=>{PICK.ccur.active=true;cpuPickEl(focusedEl(PICK.ccur));},()=>selectBack());
   paintCursors();}}
-function humans0(){return PICK.humans.length?PICK.humans[0].playerIdx:0;}
 
 function matchUpdate(dt){
  if(G.net==='guest'){guestUpdate(dt);return;}
