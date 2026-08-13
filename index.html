@@ -106,7 +106,6 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
 .teamBtn.on0{background:var(--azul);color:#03203a;border-color:#052a4a}
 .teamBtn.on1{background:var(--verm);color:#3a0308;border-color:#401d00}
 .teamBtn.onC{background:#3a4780;color:#cfd8ff}
-/* Editor de HUD */
 #scr-hudedit{background:rgba(7,8,26,.12);pointer-events:none;overflow:hidden}
 #scr-hudedit .hudPanel{pointer-events:auto;touch-action:none;background:#0d1626f0;border:3px solid #2c3f66;border-radius:16px;padding:10px 14px 14px;width:min(430px,94vw);text-align:center;box-shadow:0 10px 30px #000c;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);max-height:92vh;overflow:auto}
 #hudGrip{cursor:grab;touch-action:none;font-family:Bangers;color:#8fa2ff;font-size:13px;letter-spacing:2px;padding:4px 0 6px;border-bottom:1px dashed #2c3f66;margin-bottom:8px}
@@ -267,7 +266,7 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
   <button class="btn alt" id="btnOnline">🌐 SALAS ONLINE</button>
   <button class="btn alt" id="btnControls">🎮 CONTROLES</button>
   <button class="btn alt" id="btnHelp">COMO JOGAR</button>
-  <div class="blink">▼ EDITE O HUD NA POSIÇÃO PADRÃO E COMPARTILHE POR CÓDIGO ▼</div>
+  <div class="blink">▼ EDITOR DE HUD: BOTÕES SEMPRE NA POSIÇÃO PADRÃO ▼</div>
   <div class="ctrl-strip">
     <span><b>TECLADO 1</b> <kbd>WASD</kbd>+<kbd>F</kbd><kbd>G</kbd><kbd>H</kbd></span>
     <span><b>TECLADO 2</b> <kbd>←↑↓→</kbd>+<kbd>J</kbd><kbd>K</kbd><kbd>L</kbd></span>
@@ -450,7 +449,7 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
   <h3>COMO JOGAR</h3>
   Briga de plataforma estilo Brawlhalla: aumente o <b>% de dano</b> e arremesse todos pra fora da arena. Vence o time que sobrar (4 min). O <b>soco é livre</b>.
   <h3>HUD DO CELULAR</h3>
-  Em CONTROLES → <b>✏️ EDITAR HUD</b>: os botões abrem na <b>posição padrão</b> do modo celular; arraste o painel e cada botão; ajuste tamanho/opacidade; <b>SALVAR</b> gera um <b>CÓDIGO</b> — copie e, depois, cole em USAR para carregar sem configurar de novo.
+  Em CONTROLES → <b>✏️ EDITAR HUD</b>: os botões abrem nas <b>posições padrão originais</b>; arraste o painel e cada botão; ajuste tamanho/opacidade; <b>SALVAR</b> gera <b>CÓDIGO</b> p/ copiar e <b>USAR</b> carrega um código colado.
   <div style="text-align:center;margin-top:16px"><button class="btn small" id="btnHelpBack">VOLTAR</button></div>
 </div></div>
 
@@ -650,7 +649,7 @@ const PLAYERS=[];for(let i=0;i<MAXP;i++)PLAYERS.push({device:(i===0?'kb1':i===1?
 function myDev(){return PLAYERS[0].device;}
 const touchState={l:0,r:0,u:0,d:0,atk:0,hvy:0,pow:0,wp:0,def:0};
 
-/* ===== EDITOR DE HUD (posição padrão + código) ===== */
+/* ===== EDITOR DE HUD: sempre abre nas POSIÇÕES PADRÃO ORIGINAIS ===== */
 const HUDKEYS=['l','r','u','d','atk','hvy','pow','wp','def'];
 const HUDLBL={l:'◀',r:'▶',u:'⬆',d:'▼',atk:'HIT',hvy:'FORTE',pow:'PODER',wp:'ARMA',def:'DEF'};
 let HUDCFG=loadHUDCFG();
@@ -676,13 +675,22 @@ function applyTouchLayout(){
    b.style.transform='translate(-50%,-50%) scale('+(cfg.s||1)+')';b.style.opacity=(cfg.a!=null?cfg.a:1);}
   else{b.style.position='';b.style.left='';b.style.top='';b.style.transform='';b.style.opacity='';}});}
 addEventListener('resize',applyTouchLayout);
-/* captura as posições REAIS do layout padrão (flex) que o jogo usa no modo celular */
+/* captura as posições REAIS do layout padrão (flex) do modo celular */
 function captureFromCurrentLayout(){
  const cfg={custom:true};
  document.querySelectorAll('#touchUI [data-t]').forEach(b=>{
   const r=b.getBoundingClientRect();
   cfg[b.dataset.t]={x:+(((r.left+r.width/2)/innerWidth).toFixed(3)),y:+(((r.top+r.height/2)/innerHeight).toFixed(3)),s:1,a:1};});
  return cfg;}
+/* força o layout padrão (flex) e captura -> posições padrão originais */
+function resetToDefaults(){
+ HUDCFG={custom:false};
+ applyTouchLayout();
+ $('#touchUI').classList.remove('hidden');
+ document.body.classList.add('touchmode');
+ void $('#touchUI').offsetHeight;
+ HUDCFG=captureFromCurrentLayout();
+ applyTouchLayout();}
 function buildHudMini(){
  const row=$('#hudMiniRow');row.innerHTML='';
  const mk=(key,label)=>{const b=document.createElement('button');b.className='miniBtn';b.textContent=label;b.dataset.k=key;
@@ -710,22 +718,10 @@ function hudNudge(dir){
 function openHudEdit(){
  HUD.backup=JSON.parse(JSON.stringify(HUDCFG));
  HUD.editing=true;
- document.body.classList.add('touchmode');
- if(HUDCFG.custom){
-  applyTouchLayout();
-  $('#touchUI').classList.remove('hidden');
- }else{
-  /* parte do layout padrão do modo celular e captura essas posições */
-  HUDCFG.custom=false;
-  applyTouchLayout();
-  $('#touchUI').classList.remove('hidden');
-  void $('#touchUI').offsetHeight;
-  HUDCFG=captureFromCurrentLayout();
-  applyTouchLayout();
- }
+ resetToDefaults(); /* SEMPRE começa nas posições padrão originais */
  show('scr-hudedit');
  buildHudMini();selectHudBtn('all');
- $('#hudCodeOut').value=HUDCFG.custom?encodeHUD():'';
+ $('#hudCodeOut').value=encodeHUD();
  $('#hudCodeIn').value='';}
 function closeHudEdit(save){
  if(save)saveHUDCFG();else if(HUD.backup)HUDCFG=HUD.backup;
@@ -767,7 +763,7 @@ $('#hudCopy').onclick=()=>{const code=$('#hudCodeOut').value;if(!code){sfx('deny
  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(code).then(()=>announce('CÓDIGO COPIADO!'));}
  else{$('#hudCodeOut').removeAttribute('readonly');$('#hudCodeOut').select();try{document.execCommand('copy');announce('CÓDIGO COPIADO!');}catch(e){}$('#hudCodeOut').setAttribute('readonly','');}};
 $('#hudUse').onclick=()=>{if(decodeHUD($('#hudCodeIn').value)){applyTouchLayout();selectHudBtn(HUD.sel);$('#hudCodeOut').value=encodeHUD();sfx('go');announce('HUD CARREGADO!');}else{sfx('deny');announce('CÓDIGO INVÁLIDO');}};
-$('#hudReset').onclick=()=>{HUDCFG=captureFromCurrentLayout();applyTouchLayout();selectHudBtn(HUD.sel);$('#hudCodeOut').value=encodeHUD();};
+$('#hudReset').onclick=()=>{resetToDefaults();selectHudBtn(HUD.sel);$('#hudCodeOut').value=encodeHUD();};
 $('#hudClose').onclick=()=>{closeHudEdit(false);};
 $('#btnEditHud').onclick=()=>{openHudEdit();};
 
