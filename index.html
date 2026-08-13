@@ -14,7 +14,6 @@ html,body{height:100%;overflow:hidden;background:#07081a;font-family:'Chakra Pet
 #stage-wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding-bottom:var(--band);padding-top:var(--hudband);background:radial-gradient(1200px 700px at 50% 30%,#101433,#07081a)}
 canvas#cv{width:min(100vw,calc((100vh - var(--band) - var(--hudband))*1.7778));height:min(56.2vw,calc(100vh - var(--band) - var(--hudband)));display:block;box-shadow:0 0 120px #000c inset}
 body.touchmode{--band:clamp(104px,20vh,190px)}
-/* HUD vira faixa superior compacta no celular */
 @media (max-width:900px){body{--hudband:52px}}
 @media (max-height:520px){body{--band:92px;--hudband:44px}}
 #blind{position:absolute;inset:0;background:radial-gradient(circle,#fff 40%,#fff8e0);opacity:0;pointer-events:none;z-index:30;transition:opacity .12s}
@@ -23,7 +22,6 @@ body.touchmode{--band:clamp(104px,20vh,190px)}
 body.touchmode #announce{top:22%}
 #announce.show{animation:pop .9s ease forwards}
 @keyframes pop{0%{opacity:0;transform:scale(2.4)}18%{opacity:1;transform:scale(1)}80%{opacity:1}100%{opacity:0;transform:scale(.9)}}
-/* HUD desktop (embaixo) */
 #hud{position:absolute;left:0;right:0;bottom:10px;display:flex;justify-content:space-between;align-items:flex-end;padding:0 14px;z-index:20;pointer-events:none;gap:8px}
 body.touchmode #hud{bottom:auto;top:0;height:var(--hudband);align-items:center;padding:2px 6px}
 #hud.hide{display:none}
@@ -45,7 +43,6 @@ body.touchmode #hud{bottom:auto;top:0;height:var(--hudband);align-items:center;p
 .fp i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--ouro),#ff9a2a)}
 .fb{font-size:9px;font-weight:700;color:#ffd;min-height:11px;letter-spacing:.4px}
 .fcard em{position:absolute;top:-11px;left:8px;font-style:normal;font-family:Bangers;font-size:13px;background:var(--ouro);color:#3a2500;padding:0 7px;border-radius:5px;border:2px solid #6b4a00}
-/* HUD minimalista no celular: só carinha + % */
 @media (max-width:900px),(max-height:520px){
  #hud{flex-direction:row;align-items:center}
  .hud-team{flex-direction:row;flex-wrap:wrap;gap:3px;align-items:center}
@@ -58,7 +55,6 @@ body.touchmode #hud{bottom:auto;top:0;height:var(--hudband);align-items:center;p
  .fa,.fp,.fb{display:none}
  .fcard em{font-size:8px;top:-8px;left:4px;padding:0 4px;border-width:1px}
 }
-/* Botões de toque enxutos */
 #muteBtn{position:fixed;top:12px;right:12px;z-index:60;background:#0e1230;color:#fff;border:3px solid var(--borda);border-radius:10px;font-size:20px;padding:5px 11px;cursor:pointer;box-shadow:0 4px 0 #0008}
 @media (max-width:900px),(max-height:520px){#muteBtn{top:auto;bottom:calc(var(--band) + 6px);right:6px;font-size:14px;padding:3px 8px}}
 #touchPauseBtn{position:fixed;top:12px;right:64px;z-index:60;width:46px;height:46px;border-radius:50%;background:#ffffff33;border:2px solid #ffffff66;color:#fff;font-size:18px;cursor:pointer;touch-action:none}
@@ -104,6 +100,9 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
 #scr-setup .opt{font-size:clamp(11px,2.2vh,14px);padding:5px 10px 3px;box-shadow:0 3px 0 #0008}
 #scr-setup .opt small{font-size:.72em}
 #scr-setup .btn{font-size:clamp(13px,2.4vh,17px);padding:6px 18px 4px;margin:5px 4px 0}
+.waitmsg{font-size:12px;color:#9fd0ff;margin-top:8px}
+.olsec{width:min(560px,94vw);text-align:center}
+.olsec h3{font-family:Bangers;color:var(--ouro);font-size:16px;margin:8px 0 4px}
 #scr-select{padding:12px 14px}
 #selWrap{display:flex;gap:14px;width:min(1480px,98vw);min-height:100%;align-items:flex-start}
 #selMain{display:flex;flex-direction:column;flex:1;min-width:0;gap:8px}
@@ -200,6 +199,7 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
 #bindModal .cancel{margin-top:16px;font-family:Bangers;font-size:clamp(13px,2.4vh,16px);padding:6px 22px;border:2px solid var(--borda);background:#1c2447;color:#fff;border-radius:8px;cursor:pointer}
 .optmini{font-family:Bangers;font-size:11px;padding:3px 8px;border-radius:6px;border:2px solid var(--borda);background:#1b2145;color:#aab6e8;cursor:pointer;margin:0 2px}
 .optmini.on{background:var(--ouro);color:#3a2500;border-color:#6b4a00}
+.optmini.ro{cursor:default}
 #olCodeIn{font-family:Bangers;font-size:20px;letter-spacing:4px;width:110px;text-align:center;background:#1b2145;border:2px solid var(--borda);border-radius:8px;color:var(--ouro);padding:4px}
 #olPicksLine{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:6px 0}
 #olPicksLine span{font-size:11px;background:#1b2145;border:1px solid var(--borda);border-radius:6px;padding:2px 8px}
@@ -242,7 +242,7 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
   <button class="btn alt" id="btnOnline">🌐 SALAS ONLINE</button>
   <button class="btn alt" id="btnControls">🎮 CONTROLES</button>
   <button class="btn alt" id="btnHelp">COMO JOGAR</button>
-  <div class="blink">▼ LAYOUT MOBILE: HUD E BOTÕES FORA DA TELA DO JOGO ▼</div>
+  <div class="blink">▼ ONLINE: MAPA → TIMES/NPCS → LUTADORES ▼</div>
   <div class="ctrl-strip">
     <span><b>TECLADO 1</b> <kbd>WASD</kbd>+<kbd>F</kbd><kbd>G</kbd><kbd>H</kbd> <kbd>E</kbd> arma <kbd>Q</kbd> def</span>
     <span><b>TECLADO 2</b> <kbd>←↑↓→</kbd>+<kbd>J</kbd><kbd>K</kbd><kbd>L</kbd> <kbd>I</kbd> arma <kbd>O</kbd> def</span>
@@ -297,15 +297,32 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
       <div id="olInfo" style="display:none">
         <div style="font-family:Bangers;font-size:36px;color:var(--ouro);text-align:center" id="olCode"></div>
         <div id="olPlayers"></div>
-        <div id="olHostOpts"></div>
         <div style="text-align:center">
-          <button class="btn small" id="btnOlSelect">ESCOLHER LUTADORES ▶</button>
+          <button class="btn small" id="btnOlConfig" style="display:none">CONFIGURAR PARTIDA ▶</button>
+          <div id="olWaitCfg" class="waitmsg" style="display:none">aguardando o host configurar…</div>
           <button class="btn small ghost" id="btnLeave">SAIR DA SALA</button>
         </div>
       </div>
     </div>
   </div>
   <div style="margin:10px 0 8px"><button class="btn ghost small" id="btnOnlineBack">◀ VOLTAR</button></div>
+</div>
+
+<div class="screen solid" id="scr-olsetup">
+  <h2 class="sh">CONFIGURAR PARTIDA</h2>
+  <div class="olsec" id="olStep1">
+    <h3>MAPA</h3><div id="olMap" class="optrow"></div>
+    <h3>DIFICULDADE DA CPU</h3><div id="olCpu" class="optrow"></div>
+    <div><button class="btn small" id="btnOlStep2" style="display:none">TIMES E NPCs ▶</button></div>
+    <div id="olWait1" class="waitmsg" style="display:none">aguardando o host…</div>
+  </div>
+  <div class="olsec" id="olStep2" style="display:none">
+    <h3>TAMANHO DO TIME</h3><div id="olSize" class="optrow"></div>
+    <h3>HUMANOS POR TIME</h3><div id="olHum" class="optrow"></div>
+    <h3>NPCs POR TIME</h3><div id="olNpc" class="optrow"></div>
+    <div><button class="btn ghost small" id="btnOlStep1b" style="display:none">◀ VOLTAR</button><button class="btn small" id="btnOlSelect2" style="display:none">ESCOLHER LUTADORES ▶</button></div>
+    <div id="olWait2" class="waitmsg" style="display:none">aguardando o host…</div>
+  </div>
 </div>
 
 <div class="screen solid" id="scr-olselect">
@@ -379,8 +396,8 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
 <div class="screen solid" id="scr-help"><div id="helpBox">
   <h3>COMO JOGAR</h3>
   Briga de plataforma estilo Brawlhalla: aumente o <b>% de dano</b> e arremesse todos pra fora da arena. Vence o time que sobrar (4 min). O <b>soco é livre</b>.
-  <h3>MOBILE</h3>
-  No celular o HUD vira uma faixa fina no topo e os botões de toque ficam na faixa de baixo — a arena fica livre.
+  <h3>ONLINE (ordem das telas)</h3>
+  SALA → <b>MAPA + DIFICULDADE</b> → <b>TIMES / HUMANOS / NPCs</b> → <b>ESCOLHA DE LUTADORES</b>. O host configura e avança; convidados acompanham.
   <div style="text-align:center;margin-top:16px"><button class="btn small" id="btnHelpBack">VOLTAR</button></div>
 </div></div>
 
@@ -605,10 +622,10 @@ function addGamepadDevice(gp){
 addEventListener('gamepadconnected',e=>{initAudio();addGamepadDevice(e.gamepad);const d=DEVICES['gp'+e.gamepad.index];
  announce('🎮 '+d.label+' CONECTADO!'+((d.family==='PS2'||d.family==='GENÉRICO')?' BOTÃO 2 = PULAR/SELECIONAR':''));sfx('go');updateGpStatus();
  if($('#scr-controls').classList.contains('active'))renderControlsScreen();
- if($('#scr-online').classList.contains('active')||$('#scr-olselect').classList.contains('active'))olRender();});
+ if($('#scr-online').classList.contains('active')||$('#scr-olsetup').classList.contains('active')||$('#scr-olselect').classList.contains('active'))olRender();});
 addEventListener('gamepaddisconnected',e=>{const k='gp'+e.gamepad.index;if(DEVICES[k]){DEVICES[k].online=false;announce('JOYSTICK '+DEVICES[k].label+' SAIU');}updateGpStatus();
  if($('#scr-controls').classList.contains('active'))renderControlsScreen();
- if($('#scr-online').classList.contains('active')||$('#scr-olselect').classList.contains('active'))olRender();});
+ if($('#scr-online').classList.contains('active')||$('#scr-olsetup').classList.contains('active')||$('#scr-olselect').classList.contains('active'))olRender();});
 function updateGpStatus(){const el=$('#gpStatus');const on=Object.values(DEVICES).filter(d=>d.kind==='gp'&&d.online);
  if(!on.length){el.classList.remove('show');return;}el.classList.add('show');el.innerHTML='<b>🎮</b> '+on.map(d=>d.label).join(' · ');}
 function assignDevice(p,key){const prev=PLAYERS[p].device;if(prev===key)return;
@@ -754,7 +771,7 @@ const UI={idx:0,list:[],prev:{},hold:{},suppressUntil:0};
 function uiRefresh(){
  const scr=SCREENS.find(s=>$('#'+s).classList.contains('active'));
  if(!scr){UI.list=[];return;}
- UI.list=[...$('#'+scr).querySelectorAll('button, .opt, .devTab, .bindChip:not(.static), .optmini')].filter(el=>el.offsetParent!==null&&!el.disabled);
+ UI.list=[...$('#'+scr).querySelectorAll('button, .opt, .devTab, .bindChip:not(.static), .optmini:not(.ro)')].filter(el=>el.offsetParent!==null&&!el.disabled);
  if(UI.idx>=UI.list.length)UI.idx=0;
  markFocus();}
 function markFocus(){document.querySelectorAll('.ui-focus').forEach(e=>e.classList.remove('ui-focus'));const el=UI.list[UI.idx];if(el){el.classList.add('ui-focus');el.scrollIntoView({block:'nearest',inline:'nearest'});}}
@@ -790,7 +807,7 @@ function navState(){
 function confirmFocus(){const el=UI.list[UI.idx];if(!el)return;sfx('sel');el.click();setTimeout(uiRefresh,60);}
 function backAction(){
  const scr=SCREENS.find(s=>$('#'+s).classList.contains('active'));
- const map={'scr-setup':'#btnBack1','scr-controls':'#btnCtrlBack','scr-help':'#btnHelpBack','scr-result':'#btnMenu','scr-online':'#btnOnlineBack','scr-olselect':'#btnOlBack'};
+ const map={'scr-setup':'#btnBack1','scr-controls':'#btnCtrlBack','scr-help':'#btnHelpBack','scr-result':'#btnMenu','scr-online':'#btnOnlineBack','scr-olsetup':'#btnOlStep1b','scr-olselect':'#btnOlBack'};
  const id=map[scr];if(id){sfx('sel');$(id).click();setTimeout(uiRefresh,60);}}
 function menuNav(){
  if(bindState.active)return;
@@ -1058,19 +1075,19 @@ function touchNeeded(){
  if(G.net==='guest')return !!(DEVICES[myDev()]&&DEVICES[myDev()].kind==='touch');
  return touchHumanExists();}
 
-/* ===== ONLINE ===== */
-let NET={role:null,peer:null,conns:[],code:'',myIdx:0,hostCon:null,players:[],opts:{size:2,map:0,diff:1,hpt:1},inAcc:0,snapAcc:0,snap:null,lastAnn:''};
+/* ===== ONLINE (fluxo: SALA → MAPA+CPU → TIMES/HUMANOS/NPCs → LUTADORES) ===== */
+let NET={role:null,peer:null,conns:[],code:'',myIdx:0,hostCon:null,players:[],opts:{size:2,map:0,diff:1,hpt:1},step:1,inAcc:0,snapAcc:0,snap:null,lastAnn:''};
 function olCodeGen(){const A='ABCDEFGHJKLMNPQRSTUVWXYZ';let s='';for(let i=0;i<4;i++)s+=A[ri(0,A.length-1)];return s;}
-function olReset(){NET.role=null;NET.conns=[];NET.hostCon=null;NET.players=[];NET.myIdx=0;NET.snap=null;}
+function olReset(){NET.role=null;NET.conns=[];NET.hostCon=null;NET.players=[];NET.myIdx=0;NET.snap=null;NET.step=1;}
 function createRoom(){
  if(typeof Peer==='undefined'){announce('SEM CONEXÃO (PEERJS)');return;}
- NET.code=olCodeGen();NET.role='host';
+ NET.code=olCodeGen();NET.role='host';NET.step=1;
  NET.players=[{idx:0,name:'HOST (VOCÊ)',ch:NET.myCh||'victor'}];
  NET.peer=new Peer('pancadao-'+NET.code);
  NET.peer.on('open',()=>{olRender();announce('SALA '+NET.code+' CRIADA');});
  NET.peer.on('connection',con=>{con.on('open',()=>{
    const idx=nextFreeIdx();if(idx<0){con.close();return;}
-   NET.conns.push({con,idx});NET.players.push({idx,name:'CONVIDADO '+idx,ch:'victor'});
+   NET.conns.push({con,idx});NET.players.push({idx:name:'CONVIDADO '+idx,ch:'victor'});
    con.on('data',d=>olHostData(con,idx,d));
    con.on('close',()=>olRemove(idx));
    olRender();olBroadcastRoom();});});
@@ -1081,7 +1098,7 @@ function joinRoom(){
  if(typeof Peer==='undefined'){announce('SEM CONEXÃO (PEERJS)');return;}
  const code=($('#olCodeIn').value||'').toUpperCase().trim();
  if(code.length<4){announce('CÓDIGO INVÁLIDO');return;}
- NET.code=code;NET.role='guest';
+ NET.code=code;NET.role='guest';NET.step=1;
  NET.peer=new Peer();
  NET.peer.on('open',()=>{
   NET.hostCon=NET.peer.connect('pancadao-'+code,{reliable:true});
@@ -1090,13 +1107,17 @@ function joinRoom(){
   NET.hostCon.on('close',()=>{announce('HOST SAIU');goOnlineLobby();});});
  NET.peer.on('error',e=>announce('ERRO: '+e.type));}
 function olRemove(idx){NET.conns=NET.conns.filter(c=>c.idx!==idx);NET.players=NET.players.filter(p=>p.idx!==idx);olRender();olBroadcastRoom();}
-function olBroadcastRoom(){NET.conns.forEach(c=>c.con.send({t:'room',players:NET.players,opts:NET.opts,code:NET.code}));}
+function olBroadcastRoom(){NET.conns.forEach(c=>c.con.send({t:'room',players:NET.players,opts:NET.opts,step:NET.step,code:NET.code}));}
+function olGoto(screen,step){NET.step=step;show(screen);olRender();NET.conns.forEach(c=>c.con.send({t:'goto',screen,step}));}
 function olHostData(con,idx,d){
  if(d.t==='pick'){const p=NET.players.find(p=>p.idx===idx);if(p)p.ch=d.ch;olRender();olBroadcastRoom();}
  else if(d.t==='in'){const f=G.fighters.find(f=>f.human&&f.playerIdx===idx);if(f)f.netRaw=d.raw;}
  else if(d.t==='leave'){olRemove(idx);}}
 function olGuestData(d){
- if(d.t==='room'){NET.players=d.players;NET.opts=d.opts;NET.code=d.code;olRender();}
+ if(d.t==='room'){NET.players=d.players;NET.opts=d.opts;NET.step=d.step||NET.step;
+  if($('#scr-olsetup').classList.contains('active'))olRenderSetup();
+  if($('#scr-online').classList.contains('active'))olRender();}
+ else if(d.t==='goto'){NET.step=d.step;show(d.screen);olRender();}
  else if(d.t==='start'){startMatch(d.cfg);G.net='guest';G.myIdx=d.yourIdx;hideAllScreens();$('#hud').classList.remove('hide');}
  else if(d.t==='snap'){NET.snap=d.s;}
  else if(d.t==='over'){G.winner=d.winner;G.state='over';showResult();}
@@ -1148,8 +1169,34 @@ function hostStart(){
  startMatch(cfg);
  G.net='host';G.remote=new Set(humans.slice(1).map(h=>h.idx));
  NET.conns.forEach(c=>c.con.send({t:'start',cfg,yourIdx:c.idx}));}
-function goOnlineLobby(){G.state='idle';show('scr-online');$('#hud').classList.add('hide');olRender();}
-function optGroup(label,vals,cur,k,labels){return `<div style="margin:4px 0"><small style="color:#9fb0e8">${label}</small> `+vals.map((v,i)=>`<button class="optmini ${v===cur?'on':''}" data-k="${k}" data-v="${v}">${labels?labels[i]:v}</button>`).join(' ')+`</div>`;}
+function goOnlineLobby(){G.state='idle';NET.step=1;show('scr-online');$('#hud').classList.add('hide');olRender();}
+function renderOpts(container,vals,cur,labels,onPick){
+ container.innerHTML='';
+ vals.forEach((v,i)=>{const b=document.createElement('button');
+  b.className='optmini'+(v===cur?' on':'')+(onPick?'':' ro');
+  b.textContent=labels?labels[i]:v;
+  if(onPick)b.onclick=()=>{onPick(v);};
+  container.appendChild(b);});}
+function olRenderSetup(){
+ const host=NET.role==='host';
+ $('#olStep1').style.display=NET.step===1?'':'none';
+ $('#olStep2').style.display=NET.step===2?'':'none';
+ $('#btnOlStep2').style.display=host&&NET.step===1?'':'none';
+ $('#btnOlStep1b').style.display=host&&NET.step===2?'':'none';
+ $('#btnOlSelect2').style.display=host&&NET.step===2?'':'none';
+ $('#olWait1').style.display=(!host&&NET.step===1)?'':'none';
+ $('#olWait2').style.display=(!host&&NET.step===2)?'':'none';
+ const set=k=>v=>{
+  if(k==='size'){NET.opts.size=v;NET.opts.hpt=clamp(NET.opts.hpt,1,v);}
+  else if(k==='hpt')NET.opts.hpt=clamp(v,1,NET.opts.size);
+  else if(k==='npc')NET.opts.hpt=clamp(NET.opts.size-v,1,NET.opts.size);
+  else NET.opts[k]=v;
+  olRenderSetup();olBroadcastRoom();};
+ renderOpts($('#olMap'),[0,1,2,3,4],NET.opts.map,['CIDADE','PRAIA','ESCRIT','ESCOLA','NEVE'],host?set('map'):null);
+ renderOpts($('#olCpu'),[0,1,2],NET.opts.diff,['FÁCIL','NORMAL','DIFÍCIL'],host?set('diff'):null);
+ renderOpts($('#olSize'),[2,3,4],NET.opts.size,null,host?set('size'):null);
+ renderOpts($('#olHum'),[1,2,3,4].filter(v=>v<=NET.opts.size),NET.opts.hpt,null,host?set('hpt'):null);
+ renderOpts($('#olNpc'),[...Array(NET.opts.size).keys()],NET.opts.size-NET.opts.hpt,null,host?set('npc'):null);}
 function olRender(){
  const inRoom=!!NET.role;
  $('#olCreate').style.display=inRoom?'none':'';
@@ -1163,31 +1210,15 @@ function olRender(){
   d.appendChild(cvp);
   const tx=document.createElement('div');tx.innerHTML=`<b>P${p.idx+1}</b> ${p.name}<br><small>${(CH[p.ch]||{}).nome||p.ch}</small>`;
   d.appendChild(tx);pl.appendChild(d);});
- const line=$('#olPicksLine');
- if(line)line.innerHTML=NET.players.slice().sort((a,b)=>a.idx-b.idx).map(p=>`<span><b>P${p.idx+1}</b> ${(CH[p.ch]||{}).nome||p.ch}</span>`).join('');
- $('#btnOlStart').style.display=(NET.role==='host')?'':'none';
- const ho=$('#olHostOpts');
- if(ho){
-  if(NET.role==='host'){
-   const size=NET.opts.size;const hpt=clamp(NET.opts.hpt||1,1,size);NET.opts.hpt=hpt;const npc=size-hpt;
-   ho.innerHTML=
-    optGroup('TIME',[2,3,4],size,'size')+
-    optGroup('HUMANOS/TIME',[1,2,3,4].filter(v=>v<=size),hpt,'hpt')+
-    optGroup('NPCs/TIME',[...Array(size).keys()],npc,'npc')+
-    optGroup('MAPA',[0,1,2,3,4],NET.opts.map,'map',['CIDADE','PRAIA','ESCRIT','ESCOLA','NEVE'])+
-    optGroup('CPU',[0,1,2],NET.opts.diff,'diff',['FÁCIL','NORMAL','DIFÍCIL']);
-   ho.querySelectorAll('.optmini').forEach(b=>b.onclick=()=>{
-    const k=b.dataset.k,v=+b.dataset.v;
-    if(k==='size'){NET.opts.size=v;NET.opts.hpt=clamp(NET.opts.hpt,1,v);}
-    else if(k==='hpt')NET.opts.hpt=clamp(v,1,NET.opts.size);
-    else if(k==='npc')NET.opts.hpt=clamp(NET.opts.size-v,1,NET.opts.size);
-    else NET.opts[k]=v;
-    olRender();olBroadcastRoom();});
-  }else{
-   const size=NET.opts.size,hpt=clamp(NET.opts.hpt||1,1,size),npc=size-hpt;
-   ho.innerHTML=`<div style="font-size:11px;color:#9fb0e8">Time ${size}v${size} · ${hpt} humano(s) + ${npc} NPC(s) por time · Mapa ${['CIDADE','PRAIA','ESCRITÓRIO','ESCOLA','NEVE'][NET.opts.map]} · CPU ${['FÁCIL','NORMAL','DIFÍCIL'][NET.opts.diff]}</div>`;}}
- olBuildDevices();
- olHighlight();}
+ const host=NET.role==='host';
+ $('#btnOlConfig').style.display=host?'':'none';
+ $('#olWaitCfg').style.display=host?'none':'';
+ if($('#scr-olsetup').classList.contains('active'))olRenderSetup();
+ if($('#scr-olselect').classList.contains('active')){
+  const line=$('#olPicksLine');
+  line.innerHTML=NET.players.slice().sort((a,b)=>a.idx-b.idx).map(p=>`<span><b>P${p.idx+1}</b> ${(CH[p.ch]||{}).nome||p.ch}</span>`).join('');
+  $('#btnOlStart').style.display=host?'':'none';
+  olBuildDevices();olHighlight();}}
 function olBuildDevices(){
  const box=$('#olDevices');box.innerHTML='';
  const ks=['kb1','kb2','touch',...Object.keys(DEVICES).filter(k=>DEVICES[k].kind==='gp'&&DEVICES[k].online)];
@@ -1215,7 +1246,7 @@ function olNav(){
   OLNAV.prev[k]=held[k];}
  if(held.atk&&!OLNAV.prev.atk)olPickChar(ROSTER[OLNAV.idx]);
  OLNAV.prev.atk=held.atk;
- if(held.back&&!OLNAV.prev.back)show('scr-online');
+ if(held.back&&!OLNAV.prev.back)show('scr-olsetup');
  OLNAV.prev.back=held.back;
  if(NET.role==='host'&&held.hvy&&!OLNAV.prev.hvy)hostStart();
  OLNAV.prev.hvy=held.hvy;}
@@ -1616,7 +1647,7 @@ function updateHUD(){if(!G.fighters.length||G.attract)return;
  const tm=Math.max(0,Math.ceil(G.time));
  $('#timerBox').textContent=Math.floor(tm/60)+':'+(''+(tm%60)).padStart(2,'0');}
 
-const SCREENS=['scr-title','scr-setup','scr-online','scr-olselect','scr-controls','scr-select','scr-vs','scr-result','scr-pause','scr-help'];
+const SCREENS=['scr-title','scr-setup','scr-online','scr-olsetup','scr-olselect','scr-controls','scr-select','scr-vs','scr-result','scr-pause','scr-help'];
 function show(id){SCREENS.forEach(s=>$('#'+s).classList.toggle('active',s===id));UI.idx=0;uiRefresh();}
 function hideAllScreens(){SCREENS.forEach(s=>$('#'+s).classList.remove('active'));UI.list=[];}
 function togglePause(){paused=!paused;$('#scr-pause').classList.toggle('active',paused);uiRefresh();}
@@ -1634,8 +1665,11 @@ $('#btnOnlineBack').onclick=()=>show('scr-title');
 $('#btnCreate').onclick=()=>{initAudio();createRoom();};
 $('#btnJoin').onclick=()=>{initAudio();joinRoom();};
 $('#btnLeave').onclick=()=>{if(NET.role==='guest'&&NET.hostCon)NET.hostCon.send({t:'leave'});if(NET.peer)NET.peer.destroy();olReset();olRender();};
-$('#btnOlSelect').onclick=()=>{sfx('sel');show('scr-olselect');olHighlight();};
-$('#btnOlBack').onclick=()=>{sfx('sel');show('scr-online');};
+$('#btnOlConfig').onclick=()=>{if(NET.role==='host')olGoto('scr-olsetup',1);};
+$('#btnOlStep2').onclick=()=>{if(NET.role==='host')olGoto('scr-olsetup',2);};
+$('#btnOlStep1b').onclick=()=>{if(NET.role==='host')olGoto('scr-olsetup',1);else show('scr-olsetup');};
+$('#btnOlSelect2').onclick=()=>{if(NET.role==='host')olGoto('scr-olselect',2);};
+$('#btnOlBack').onclick=()=>{sfx('sel');if(NET.role==='host')olGoto('scr-olsetup',2);else show('scr-olsetup');};
 $('#btnOlStart').onclick=()=>{if(NET.role==='host')hostStart();};
 document.querySelectorAll('#modeRow .opt').forEach(o=>o.onclick=()=>{document.querySelectorAll('#modeRow .opt').forEach(x=>x.classList.remove('on'));o.classList.add('on');SEL.mode=o.dataset.m;sfx('sel');});
 document.querySelectorAll('#sizeRow .opt').forEach(o=>o.onclick=()=>{document.querySelectorAll('#sizeRow .opt').forEach(x=>x.classList.remove('on'));o.classList.add('on');SEL.size=+o.dataset.s;sfx('sel');});
