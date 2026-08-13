@@ -106,9 +106,9 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
 .teamBtn.on0{background:var(--azul);color:#03203a;border-color:#052a4a}
 .teamBtn.on1{background:var(--verm);color:#3a0308;border-color:#401d00}
 .teamBtn.onC{background:#3a4780;color:#cfd8ff}
-/* Editor de HUD: transparente, painel arrastável */
+/* Editor de HUD */
 #scr-hudedit{background:rgba(7,8,26,.12);pointer-events:none;overflow:hidden}
-#scr-hudedit .hudPanel{pointer-events:auto;touch-action:none;background:#0d1626f0;border:3px solid #2c3f66;border-radius:16px;padding:10px 14px 14px;width:min(430px,94vw);text-align:center;box-shadow:0 10px 30px #000c;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+#scr-hudedit .hudPanel{pointer-events:auto;touch-action:none;background:#0d1626f0;border:3px solid #2c3f66;border-radius:16px;padding:10px 14px 14px;width:min(430px,94vw);text-align:center;box-shadow:0 10px 30px #000c;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);max-height:92vh;overflow:auto}
 #hudGrip{cursor:grab;touch-action:none;font-family:Bangers;color:#8fa2ff;font-size:13px;letter-spacing:2px;padding:4px 0 6px;border-bottom:1px dashed #2c3f66;margin-bottom:8px}
 #hudGrip:active{cursor:grabbing}
 #hudMiniRow{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:8px}
@@ -117,6 +117,10 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
 #hudSelLabel{font-family:Bangers;color:var(--ouro);font-size:16px;margin:2px 0 6px}
 #scr-hudedit label{display:block;font-size:12px;color:#cfd8ff;margin:6px 0 2px;text-align:left}
 #scr-hudedit input[type=range]{width:100%;touch-action:pan-x}
+#scr-hudedit input[type=text]{width:100%;background:#1b2145;border:2px solid var(--borda);border-radius:8px;color:var(--ouro);font-family:Bangers;font-size:12px;letter-spacing:1px;padding:5px 8px;text-align:center}
+.hudCodeRow{margin-top:8px;border-top:1px dashed #2c3f66;padding-top:8px}
+.hudCodeRow .crow{display:flex;gap:6px;margin-top:6px}
+.hudCodeRow .btn{margin:0}
 #hudNudge{display:flex;gap:8px;justify-content:center;margin:10px 0}
 .nudge{width:46px;height:40px;font-size:16px;color:#fff;background:#2f6fd6;border:2px solid #16407e;border-radius:8px;cursor:pointer;box-shadow:0 3px 0 #10305e}
 .hudBtns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
@@ -263,7 +267,7 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
   <button class="btn alt" id="btnOnline">🌐 SALAS ONLINE</button>
   <button class="btn alt" id="btnControls">🎮 CONTROLES</button>
   <button class="btn alt" id="btnHelp">COMO JOGAR</button>
-  <div class="blink">▼ EDITE O HUD DENTRO DO GAME, ARRASTANDO O PAINEL ▼</div>
+  <div class="blink">▼ EDITE O HUD NA POSIÇÃO PADRÃO E COMPARTILHE POR CÓDIGO ▼</div>
   <div class="ctrl-strip">
     <span><b>TECLADO 1</b> <kbd>WASD</kbd>+<kbd>F</kbd><kbd>G</kbd><kbd>H</kbd></span>
     <span><b>TECLADO 2</b> <kbd>←↑↓→</kbd>+<kbd>J</kbd><kbd>K</kbd><kbd>L</kbd></span>
@@ -385,6 +389,11 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
       <button class="btn alt small" id="hudReset">PADRÃO</button>
       <button class="btn ghost small" id="hudClose">CANCELAR</button>
     </div>
+    <div class="hudCodeRow">
+      <label>CÓDIGO DO HUD</label>
+      <div class="crow"><input type="text" id="hudCodeOut" readonly placeholder="salve p/ gerar código"><button class="btn alt small" id="hudCopy">COPIAR</button></div>
+      <div class="crow"><input type="text" id="hudCodeIn" placeholder="cole um código aqui"><button class="btn small" id="hudUse">USAR</button></div>
+    </div>
     <div class="hudHint">Arraste os BOTÕES na tela para reposicionar</div>
   </div>
 </div>
@@ -441,7 +450,7 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
   <h3>COMO JOGAR</h3>
   Briga de plataforma estilo Brawlhalla: aumente o <b>% de dano</b> e arremesse todos pra fora da arena. Vence o time que sobrar (4 min). O <b>soco é livre</b>.
   <h3>HUD DO CELULAR</h3>
-  Em CONTROLES escolha <b>CELULAR</b> e toque em <b>✏️ EDITAR HUD</b>: você vê a partida ao vivo com os botões na tela; arraste o <b>painel</b> para o lado e arraste cada <b>botão</b> para reposicionar; ajuste tamanho/opacidade.
+  Em CONTROLES → <b>✏️ EDITAR HUD</b>: os botões abrem na <b>posição padrão</b> do modo celular; arraste o painel e cada botão; ajuste tamanho/opacidade; <b>SALVAR</b> gera um <b>CÓDIGO</b> — copie e, depois, cole em USAR para carregar sem configurar de novo.
   <div style="text-align:center;margin-top:16px"><button class="btn small" id="btnHelpBack">VOLTAR</button></div>
 </div></div>
 
@@ -641,18 +650,24 @@ const PLAYERS=[];for(let i=0;i<MAXP;i++)PLAYERS.push({device:(i===0?'kb1':i===1?
 function myDev(){return PLAYERS[0].device;}
 const touchState={l:0,r:0,u:0,d:0,atk:0,hvy:0,pow:0,wp:0,def:0};
 
-/* ===== EDITOR DE HUD ===== */
+/* ===== EDITOR DE HUD (posição padrão + código) ===== */
 const HUDKEYS=['l','r','u','d','atk','hvy','pow','wp','def'];
 const HUDLBL={l:'◀',r:'▶',u:'⬆',d:'▼',atk:'HIT',hvy:'FORTE',pow:'PODER',wp:'ARMA',def:'DEF'};
 let HUDCFG=loadHUDCFG();
 const HUD={editing:false,sel:'all',drag:null,backup:null,prevScreen:'scr-controls'};
 function loadHUDCFG(){try{const s=localStorage.getItem('pancadao_hud');if(s){const o=JSON.parse(s);if(o&&o.custom)return o;}}catch(e){}return {custom:false};}
 function saveHUDCFG(){try{localStorage.setItem('pancadao_hud',JSON.stringify(HUDCFG));}catch(e){}}
-function defaultHUD(){return {custom:true,
- l:{x:.10,y:.86,s:1,a:1}, r:{x:.27,y:.86,s:1,a:1},
- u:{x:.72,y:.86,s:1,a:1}, d:{x:.58,y:.80,s:.8,a:1},
- atk:{x:.88,y:.86,s:1,a:1}, hvy:{x:.72,y:.74,s:.8,a:1}, pow:{x:.86,y:.74,s:.8,a:1},
- wp:{x:.46,y:.78,s:.8,a:1}, def:{x:.58,y:.70,s:.8,a:1}};}
+function encodeHUD(){
+ const arr=HUDKEYS.map(k=>{const c=HUDCFG[k]||{x:.5,y:.8,s:1,a:1};return [+c.x.toFixed(2),+c.y.toFixed(2),+c.s.toFixed(2),+c.a.toFixed(2)];});
+ try{return btoa(JSON.stringify(arr));}catch(e){return '';}
+}
+function decodeHUD(code){
+ try{const arr=JSON.parse(atob(code.trim()));
+  if(!Array.isArray(arr)||arr.length!==HUDKEYS.length)return false;
+  const cfg={custom:true};
+  HUDKEYS.forEach((k,i)=>{cfg[k]={x:clamp(+arr[i][0],0.02,0.98),y:clamp(+arr[i][1],0.02,0.98),s:clamp(+arr[i][2],0.4,2),a:clamp(+arr[i][3],0.1,1)};});
+  HUDCFG=cfg;return true;}catch(e){return false;}
+}
 function applyTouchLayout(){
  const custom=!!HUDCFG.custom;
  $('#touchUI').classList.toggle('custom',custom);
@@ -661,6 +676,13 @@ function applyTouchLayout(){
    b.style.transform='translate(-50%,-50%) scale('+(cfg.s||1)+')';b.style.opacity=(cfg.a!=null?cfg.a:1);}
   else{b.style.position='';b.style.left='';b.style.top='';b.style.transform='';b.style.opacity='';}});}
 addEventListener('resize',applyTouchLayout);
+/* captura as posições REAIS do layout padrão (flex) que o jogo usa no modo celular */
+function captureFromCurrentLayout(){
+ const cfg={custom:true};
+ document.querySelectorAll('#touchUI [data-t]').forEach(b=>{
+  const r=b.getBoundingClientRect();
+  cfg[b.dataset.t]={x:+(((r.left+r.width/2)/innerWidth).toFixed(3)),y:+(((r.top+r.height/2)/innerHeight).toFixed(3)),s:1,a:1};});
+ return cfg;}
 function buildHudMini(){
  const row=$('#hudMiniRow');row.innerHTML='';
  const mk=(key,label)=>{const b=document.createElement('button');b.className='miniBtn';b.textContent=label;b.dataset.k=key;
@@ -682,17 +704,29 @@ function hudNudge(dir){
  const st=0.02;
  const ks=(HUD.sel==='all')?HUDKEYS:[HUD.sel];
  ks.forEach(k=>{const c=HUDCFG[k]||(HUDCFG[k]={x:.5,y:.8,s:1,a:1});
-  if(dir==='l')c.x=clamp(c.x-st,0.03,0.97);if(dir==='r')c.x=clamp(c.x+st,0.03,0.97);
-  if(dir==='u')c.y=clamp(c.y-st,0.03,0.97);if(dir==='d')c.y=clamp(c.y+st,0.03,0.97);});
+  if(dir==='l')c.x=clamp(c.x-st,0.02,0.98);if(dir==='r')c.x=clamp(c.x+st,0.02,0.98);
+  if(dir==='u')c.y=clamp(c.y-st,0.02,0.98);if(dir==='d')c.y=clamp(c.y+st,0.02,0.98);});
  applyTouchLayout();}
 function openHudEdit(){
  HUD.backup=JSON.parse(JSON.stringify(HUDCFG));
- if(!HUDCFG.custom)HUDCFG=defaultHUD();
- HUD.editing=true;HUD.prevScreen=$('#scr-controls').classList.contains('active')?'scr-controls':'scr-title';
- applyTouchLayout();
- $('#touchUI').classList.remove('hidden');
+ HUD.editing=true;
+ document.body.classList.add('touchmode');
+ if(HUDCFG.custom){
+  applyTouchLayout();
+  $('#touchUI').classList.remove('hidden');
+ }else{
+  /* parte do layout padrão do modo celular e captura essas posições */
+  HUDCFG.custom=false;
+  applyTouchLayout();
+  $('#touchUI').classList.remove('hidden');
+  void $('#touchUI').offsetHeight;
+  HUDCFG=captureFromCurrentLayout();
+  applyTouchLayout();
+ }
  show('scr-hudedit');
- buildHudMini();selectHudBtn('all');}
+ buildHudMini();selectHudBtn('all');
+ $('#hudCodeOut').value=HUDCFG.custom?encodeHUD():'';
+ $('#hudCodeIn').value='';}
 function closeHudEdit(save){
  if(save)saveHUDCFG();else if(HUD.backup)HUDCFG=HUD.backup;
  HUD.editing=false;HUD.drag=null;HUD.backup=null;
@@ -700,17 +734,15 @@ function closeHudEdit(save){
  applyTouchLayout();
  $('#touchUI').classList.add('hidden');
  show(HUD.prevScreen||'scr-controls');}
-/* arrastar botões de toque */
 document.querySelectorAll('#touchUI [data-t]').forEach(b=>{
  const k=b.dataset.t;
  const on=e=>{e.preventDefault();initAudio();
   if(HUD.editing){selectHudBtn(k);HUD.drag=b;try{b.setPointerCapture(e.pointerId);}catch(e2){}return;}
   touchState[k]=1;b.classList.add('on');};
  const mv=e=>{if(HUD.editing&&HUD.drag===b){const cfg=HUDCFG[k]||(HUDCFG[k]={s:1,a:1});
-   cfg.x=clamp(e.clientX/innerWidth,0.03,0.97);cfg.y=clamp(e.clientY/innerHeight,0.03,0.97);applyTouchLayout();}};
+   cfg.x=clamp(e.clientX/innerWidth,0.02,0.98);cfg.y=clamp(e.clientY/innerHeight,0.02,0.98);applyTouchLayout();}};
  const off=e=>{if(e.cancelable)e.preventDefault();HUD.drag=null;touchState[k]=0;b.classList.remove('on');};
  b.addEventListener('pointerdown',on);b.addEventListener('pointermove',mv);b.addEventListener('pointerup',off);b.addEventListener('pointercancel',off);b.addEventListener('contextmenu',e=>e.preventDefault());});
-/* arrastar o PAINEL do editor pela tela */
 (function(){
  const panel=document.querySelector('#scr-hudedit .hudPanel');
  let pd=null;
@@ -730,8 +762,12 @@ document.querySelectorAll('#touchUI [data-t]').forEach(b=>{
 $('#hudSize').addEventListener('input',hudApplySliders);
 $('#hudAlpha').addEventListener('input',hudApplySliders);
 document.querySelectorAll('#hudNudge .nudge').forEach(b=>b.onclick=()=>hudNudge(b.dataset.n));
-$('#hudSave').onclick=()=>{saveHUDCFG();sfx('go');closeHudEdit(true);};
-$('#hudReset').onclick=()=>{HUDCFG=defaultHUD();applyTouchLayout();selectHudBtn(HUD.sel);};
+$('#hudSave').onclick=()=>{saveHUDCFG();$('#hudCodeOut').value=encodeHUD();sfx('go');announce('HUD SALVO! CÓDIGO GERADO');};
+$('#hudCopy').onclick=()=>{const code=$('#hudCodeOut').value;if(!code){sfx('deny');return;}
+ if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(code).then(()=>announce('CÓDIGO COPIADO!'));}
+ else{$('#hudCodeOut').removeAttribute('readonly');$('#hudCodeOut').select();try{document.execCommand('copy');announce('CÓDIGO COPIADO!');}catch(e){}$('#hudCodeOut').setAttribute('readonly','');}};
+$('#hudUse').onclick=()=>{if(decodeHUD($('#hudCodeIn').value)){applyTouchLayout();selectHudBtn(HUD.sel);$('#hudCodeOut').value=encodeHUD();sfx('go');announce('HUD CARREGADO!');}else{sfx('deny');announce('CÓDIGO INVÁLIDO');}};
+$('#hudReset').onclick=()=>{HUDCFG=captureFromCurrentLayout();applyTouchLayout();selectHudBtn(HUD.sel);$('#hudCodeOut').value=encodeHUD();};
 $('#hudClose').onclick=()=>{closeHudEdit(false);};
 $('#btnEditHud').onclick=()=>{openHudEdit();};
 
@@ -1767,7 +1803,6 @@ function render(){const c=g,t=G.t;
   c.font=p.size+'px Bangers';c.lineWidth=4;c.strokeStyle='#00000090';
   c.strokeText(p.txt,p.x,p.y);c.fillStyle=p.col;c.fillText(p.txt,p.x,p.y);});
  c.globalAlpha=1;
- /* não escurece a cena quando o Editor de HUD está aberto (visão "dentro do game") */
  if(G.attract&&!HUD.editing){c.fillStyle='rgba(7,8,26,.35)';c.fillRect(0,0,W,H);}
  c.restore();}
 
@@ -1917,7 +1952,6 @@ function loop(ts){
  if(G.net==='host'&&(G.state==='fight'||G.state==='count'||G.state==='over')){NET.snapAcc+=dt;if(NET.snapAcc>0.05){NET.snapAcc=0;sendSnap();}}
  if(G.net==='guest'&&G.state==='fight'){NET.inAcc+=dt;if(NET.inAcc>0.033){NET.inAcc=0;sendIn();}}
  const tn=touchNeeded();
- /* no Editor de HUD força o layout "dentro do game" (faixa de botões + mapa reduzido) */
  document.body.classList.toggle('touchmode',tn||HUD.editing);
  $('#touchUI').classList.toggle('hidden',!(tn||HUD.editing));
  $('#touchPauseBtn').classList.toggle('hidden',!(tn||HUD.editing));
