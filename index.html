@@ -242,7 +242,7 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
   <button class="btn alt" id="btnOnline">🌐 SALAS ONLINE</button>
   <button class="btn alt" id="btnControls">🎮 CONTROLES</button>
   <button class="btn alt" id="btnHelp">COMO JOGAR</button>
-  <div class="blink">▼ ONLINE: MAPA → TIMES/NPCS → LUTADORES ▼</div>
+  <div class="blink">▼ ONLINE: SALA → MAPA+CPU → TIMES/NPCS → LUTADORES ▼</div>
   <div class="ctrl-strip">
     <span><b>TECLADO 1</b> <kbd>WASD</kbd>+<kbd>F</kbd><kbd>G</kbd><kbd>H</kbd> <kbd>E</kbd> arma <kbd>Q</kbd> def</span>
     <span><b>TECLADO 2</b> <kbd>←↑↓→</kbd>+<kbd>J</kbd><kbd>K</kbd><kbd>L</kbd> <kbd>I</kbd> arma <kbd>O</kbd> def</span>
@@ -1075,7 +1075,7 @@ function touchNeeded(){
  if(G.net==='guest')return !!(DEVICES[myDev()]&&DEVICES[myDev()].kind==='touch');
  return touchHumanExists();}
 
-/* ===== ONLINE (fluxo: SALA → MAPA+CPU → TIMES/HUMANOS/NPCs → LUTADORES) ===== */
+/* ===== ONLINE ===== */
 let NET={role:null,peer:null,conns:[],code:'',myIdx:0,hostCon:null,players:[],opts:{size:2,map:0,diff:1,hpt:1},step:1,inAcc:0,snapAcc:0,snap:null,lastAnn:''};
 function olCodeGen(){const A='ABCDEFGHJKLMNPQRSTUVWXYZ';let s='';for(let i=0;i<4;i++)s+=A[ri(0,A.length-1)];return s;}
 function olReset(){NET.role=null;NET.conns=[];NET.hostCon=null;NET.players=[];NET.myIdx=0;NET.snap=null;NET.step=1;}
@@ -1087,7 +1087,8 @@ function createRoom(){
  NET.peer.on('open',()=>{olRender();announce('SALA '+NET.code+' CRIADA');});
  NET.peer.on('connection',con=>{con.on('open',()=>{
    const idx=nextFreeIdx();if(idx<0){con.close();return;}
-   NET.conns.push({con,idx});NET.players.push({idx:name:'CONVIDADO '+idx,ch:'victor'});
+   NET.conns.push({con:con,idx:idx});
+   NET.players.push({idx:idx,name:'CONVIDADO '+idx,ch:'victor'});
    con.on('data',d=>olHostData(con,idx,d));
    con.on('close',()=>olRemove(idx));
    olRender();olBroadcastRoom();});});
@@ -1108,7 +1109,7 @@ function joinRoom(){
  NET.peer.on('error',e=>announce('ERRO: '+e.type));}
 function olRemove(idx){NET.conns=NET.conns.filter(c=>c.idx!==idx);NET.players=NET.players.filter(p=>p.idx!==idx);olRender();olBroadcastRoom();}
 function olBroadcastRoom(){NET.conns.forEach(c=>c.con.send({t:'room',players:NET.players,opts:NET.opts,step:NET.step,code:NET.code}));}
-function olGoto(screen,step){NET.step=step;show(screen);olRender();NET.conns.forEach(c=>c.con.send({t:'goto',screen,step}));}
+function olGoto(screen,step){NET.step=step;show(screen);olRender();NET.conns.forEach(c=>c.con.send({t:'goto',screen:screen,step:step}));}
 function olHostData(con,idx,d){
  if(d.t==='pick'){const p=NET.players.find(p=>p.idx===idx);if(p)p.ch=d.ch;olRender();olBroadcastRoom();}
  else if(d.t==='in'){const f=G.fighters.find(f=>f.human&&f.playerIdx===idx);if(f)f.netRaw=d.raw;}
@@ -1129,14 +1130,14 @@ function sendSnap(){
   d:G.drops.map(d=>({x:d.x,y:d.y})),
   a:G.ants.map(a=>({x:a.x,y:a.y})),
   w:G.walls.map(w=>({x:w.x,y:w.y,w:w.w,h:w.h}))};
- NET.conns.forEach(c=>c.con.send({t:'snap',s}));}
+ NET.conns.forEach(c=>c.con.send({t:'snap',s:s}));}
 function sendIn(){
  const dev=DEVICES[myDev()]||DEVICES.kb1;
  const held=readHeld(dev);
  const raw={l:held.l,r:held.r,d:held.d,def:held.def,
   u:held.u&&!NET.myPrevU,atk:held.atk&&!NET.myPrevAtk,hvy:held.hvy&&!NET.myPrevHvy,pow:held.pow&&!NET.myPrevPow,wp:held.wp&&!NET.myPrevWp};
  NET.myPrevU=held.u;NET.myPrevAtk=held.atk;NET.myPrevHvy=held.hvy;NET.myPrevPow=held.pow;NET.myPrevWp=held.wp;
- if(NET.hostCon)NET.hostCon.send({t:'in',raw});}
+ if(NET.hostCon)NET.hostCon.send({t:'in',raw:raw});}
 function guestUpdate(dt){
  G.t+=dt;G.shake=Math.max(0,G.shake-dt*40);G.flash=Math.max(0,G.flash-dt*2.2);
  const s=NET.snap;if(!s)return;
@@ -1165,25 +1166,25 @@ function hostStart(){
  for(let t=0;t<2;t++)for(let i=0;i<size;i++){
   if(i<hpt&&hi<humans.length){assign[t*size+i]={human:true,playerIdx:humans[hi].idx};teams[t][i]=humans[hi].ch;hi++;}
   else teams[t][i]=randId();}
- const cfg={size,mode:'online',map:NET.opts.map,diff:NET.opts.diff,teams,playerAssign:assign,online:true};
+ const cfg={size:size,mode:'online',map:NET.opts.map,diff:NET.opts.diff,teams:teams,playerAssign:assign,online:true};
  startMatch(cfg);
  G.net='host';G.remote=new Set(humans.slice(1).map(h=>h.idx));
- NET.conns.forEach(c=>c.con.send({t:'start',cfg,yourIdx:c.idx}));}
+ NET.conns.forEach(c=>c.con.send({t:'start',cfg:cfg,yourIdx:c.idx}));}
 function goOnlineLobby(){G.state='idle';NET.step=1;show('scr-online');$('#hud').classList.add('hide');olRender();}
 function renderOpts(container,vals,cur,labels,onPick){
  container.innerHTML='';
  vals.forEach((v,i)=>{const b=document.createElement('button');
   b.className='optmini'+(v===cur?' on':'')+(onPick?'':' ro');
-  b.textContent=labels?labels[i]:v;
+  b.textContent=labels?labels[i]:String(v);
   if(onPick)b.onclick=()=>{onPick(v);};
   container.appendChild(b);});}
 function olRenderSetup(){
  const host=NET.role==='host';
  $('#olStep1').style.display=NET.step===1?'':'none';
  $('#olStep2').style.display=NET.step===2?'':'none';
- $('#btnOlStep2').style.display=host&&NET.step===1?'':'none';
- $('#btnOlStep1b').style.display=host&&NET.step===2?'':'none';
- $('#btnOlSelect2').style.display=host&&NET.step===2?'':'none';
+ $('#btnOlStep2').style.display=(host&&NET.step===1)?'':'none';
+ $('#btnOlStep1b').style.display=(host&&NET.step===2)?'':'none';
+ $('#btnOlSelect2').style.display=(host&&NET.step===2)?'':'none';
  $('#olWait1').style.display=(!host&&NET.step===1)?'':'none';
  $('#olWait2').style.display=(!host&&NET.step===2)?'':'none';
  const set=k=>v=>{
@@ -1196,7 +1197,7 @@ function olRenderSetup(){
  renderOpts($('#olCpu'),[0,1,2],NET.opts.diff,['FÁCIL','NORMAL','DIFÍCIL'],host?set('diff'):null);
  renderOpts($('#olSize'),[2,3,4],NET.opts.size,null,host?set('size'):null);
  renderOpts($('#olHum'),[1,2,3,4].filter(v=>v<=NET.opts.size),NET.opts.hpt,null,host?set('hpt'):null);
- renderOpts($('#olNpc'),[...Array(NET.opts.size).keys()],NET.opts.size-NET.opts.hpt,null,host?set('npc'):null);}
+ renderOpts($('#olNpc'),Array.from(Array(NET.opts.size).keys()),NET.opts.size-NET.opts.hpt,null,host?set('npc'):null);}
 function olRender(){
  const inRoom=!!NET.role;
  $('#olCreate').style.display=inRoom?'none':'';
@@ -1208,7 +1209,7 @@ function olRender(){
   const d=document.createElement('div');d.style.cssText='display:flex;gap:8px;align-items:center;margin:6px 0';
   const cvp=document.createElement('canvas');cvp.width=40;cvp.height=48;drawPortrait(cvp,CH[p.ch]||CH.victor,0);
   d.appendChild(cvp);
-  const tx=document.createElement('div');tx.innerHTML=`<b>P${p.idx+1}</b> ${p.name}<br><small>${(CH[p.ch]||{}).nome||p.ch}</small>`;
+  const tx=document.createElement('div');tx.innerHTML='<b>P'+(p.idx+1)+'</b> '+p.name+'<br><small>'+((CH[p.ch]||{}).nome||p.ch)+'</small>';
   d.appendChild(tx);pl.appendChild(d);});
  const host=NET.role==='host';
  $('#btnOlConfig').style.display=host?'':'none';
@@ -1216,12 +1217,12 @@ function olRender(){
  if($('#scr-olsetup').classList.contains('active'))olRenderSetup();
  if($('#scr-olselect').classList.contains('active')){
   const line=$('#olPicksLine');
-  line.innerHTML=NET.players.slice().sort((a,b)=>a.idx-b.idx).map(p=>`<span><b>P${p.idx+1}</b> ${(CH[p.ch]||{}).nome||p.ch}</span>`).join('');
+  line.innerHTML=NET.players.slice().sort((a,b)=>a.idx-b.idx).map(p=>'<span><b>P'+(p.idx+1)+'</b> '+((CH[p.ch]||{}).nome||p.ch)+'</span>').join('');
   $('#btnOlStart').style.display=host?'':'none';
   olBuildDevices();olHighlight();}}
 function olBuildDevices(){
  const box=$('#olDevices');box.innerHTML='';
- const ks=['kb1','kb2','touch',...Object.keys(DEVICES).filter(k=>DEVICES[k].kind==='gp'&&DEVICES[k].online)];
+ const ks=['kb1','kb2','touch'].concat(Object.keys(DEVICES).filter(k=>DEVICES[k].kind==='gp'&&DEVICES[k].online));
  ks.forEach(k=>{const dv=DEVICES[k];const b=document.createElement('button');b.className='devTab '+(myDev()===k?'on':'');
   b.textContent=(dv.kind==='kb'?(k==='kb1'?'TECLADO 1':k==='kb2'?'TECLADO 2':'CELULAR'):dv.label);
   b.onclick=()=>{PLAYERS[0].device=k;sfx('sel');olBuildDevices();};
@@ -1231,7 +1232,7 @@ function olPickChar(ch){NET.myCh=ch.id;
  else if(NET.hostCon)NET.hostCon.send({t:'pick',ch:ch.id});}
 let OLNAV={idx:0,prev:{},hold:{}};
 function olHighlight(){const box=$('#olChars');if(!box)return;
- [...box.children].forEach((el,i)=>el.classList.toggle('olcur',i===OLNAV.idx));}
+ Array.prototype.forEach.call(box.children,(el,i)=>el.classList.toggle('olcur',i===OLNAV.idx));}
 function olNav(){
  if(!$('#scr-olselect').classList.contains('active'))return;
  if(!NET.role)return;
@@ -1240,10 +1241,10 @@ function olNav(){
  const now=performance.now()/1000;
  const cols=5;
  const move=di=>{OLNAV.idx=clamp(OLNAV.idx+di,0,ROSTER.length-1);olHighlight();sfx('sel');};
- for(const[k,di]of[['l',-1],['r',1],['u',-cols],['d',cols]]){
+ [['l',-1],['r',1],['u',-cols],['d',cols]].forEach(pair=>{const k=pair[0],di=pair[1];
   if(held[k]){if(!OLNAV.prev[k]){move(di);OLNAV.hold[k]=now+.35;}else if(now>OLNAV.hold[k]){move(di);OLNAV.hold[k]=now+.12;}}
   else OLNAV.hold[k]=0;
-  OLNAV.prev[k]=held[k];}
+  OLNAV.prev[k]=held[k];});
  if(held.atk&&!OLNAV.prev.atk)olPickChar(ROSTER[OLNAV.idx]);
  OLNAV.prev.atk=held.atk;
  if(held.back&&!OLNAV.prev.back)show('scr-olsetup');
@@ -1276,11 +1277,11 @@ function openSelect(){
  SEL.teams=[new Array(SEL.size).fill(null),new Array(SEL.size).fill(null)];
  SEL._touchPick=assign.some(a=>a&&a.human&&DEVICES[PLAYERS[a.playerIdx].device].kind==='touch');
  const slots=[];
- for(let t=0;t<2;t++)for(let i=0;i<SEL.size;i++)slots.push({team:t,i,human:!!(assign[t*SEL.size+i]&&assign[t*SEL.size+i].human),playerIdx:assign[t*SEL.size+i]?assign[t*SEL.size+i].playerIdx:-1});
+ for(let t=0;t<2;t++)for(let i=0;i<SEL.size;i++)slots.push({team:t,i:i,human:!!(assign[t*SEL.size+i]&&assign[t*SEL.size+i].human),playerIdx:assign[t*SEL.size+i]?assign[t*SEL.size+i].playerIdx:-1});
  const humans=slots.filter(s=>s.human).sort((a,b)=>a.playerIdx-b.playerIdx);
  const cpus=slots.filter(s=>!s.human);
  const ed=humans.length?humans[0].playerIdx:0;
- PICK={assign,slots,humans,cpus,locked:{},cpuCur:0,done:false,history:[],openAt:performance.now(),
+ PICK={assign:assign,slots:slots,humans:humans,cpus:cpus,locked:{},cpuCur:0,done:false,history:[],openAt:performance.now(),
   phase:humans.length?'human':(cpus.length?'cpu':'finish'),hcur:{},ccur:{idx:0,prev:rawNavFor(ed,true),hold:{},active:false}};
  humans.forEach(h=>PICK.hcur[h.playerIdx]={idx:0,prev:rawNavFor(h.playerIdx,true),hold:{},active:false});
  GRID_ELS.forEach(el=>el.classList.remove('cur0','cur1','cur2','cur3','curC'));
@@ -1296,10 +1297,10 @@ function selectBack(){
  sfx('sel');renderTrays();refreshCardTags();paintCursors();pickStatus();}
 function pollCursor(cur,raw,onMove,onSel,onBack){
  const now=performance.now()/1000;
- for(const[k,dx,dy]of[['l',-1,0],['r',1,0],['u',0,-1],['d',0,1]]){
+ [['l',-1,0],['r',1,0],['u',0,-1],['d',0,1]].forEach(arr=>{const k=arr[0],dx=arr[1],dy=arr[2];
   if(raw[k]){if(!cur.prev[k]){onMove(dx,dy);cur.hold[k]=now+.35;}else if(now>cur.hold[k]){onMove(dx,dy);cur.hold[k]=now+.12;}}
   else cur.hold[k]=0;
-  cur.prev[k]=raw[k];}
+  cur.prev[k]=raw[k];});
  if(raw.sel&&!cur.prev.sel)onSel();
  cur.prev.sel=raw.sel;
  if(raw.back&&!cur.prev.back)onBack();
@@ -1332,7 +1333,7 @@ function finishSelect(){if(!PICK||PICK.done)return;if(!allFilled())fillRemaining
 function launchVS(){hideAllScreens();$('#scr-vs').classList.add('active');
  const L=$('#vsTeamL'),R=$('#vsTeamR');L.innerHTML='';R.innerHTML='';
  const mk=(t,ids)=>ids.map(id=>{const c=document.createElement('canvas');c.width=80;c.height=100;(t===0?L:R).appendChild(c);return{cv:c,ch:CH[id]};});
- const vsCvs=[...mk(0,SEL.teams[0]),...mk(1,SEL.teams[1])];
+ const vsCvs=mk(0,SEL.teams[0]).concat(mk(1,SEL.teams[1]));
  setTimeout(()=>{vsCvs.forEach(o=>drawPortrait(o.cv,o.ch,performance.now()/1000));},30);
  sfx('go');
  setTimeout(()=>{startMatch({size:SEL.size,mode:SEL.mode,map:SEL.map,diff:SEL.diff,teams:[SEL.teams[0].slice(),SEL.teams[1].slice()],playerAssign:PICK.assign});},2000);}
@@ -1348,7 +1349,7 @@ function refreshCardTags(){for(const id in gridCards){const box=gridCards[id].ta
    const sl=PICK?PICK.slots[t*SEL.size+i]:null;
    if(sl&&sl.human)labels.push(['P'+(sl.playerIdx+1),'gold']);
    else labels.push([t?'CPU·V':'CPU·A',t?'red':'']);}}
- labels.slice(0,4).forEach(([txt,cls])=>{const s=document.createElement('span');if(cls)s.className=cls;s.textContent=txt;box.appendChild(s);});}}
+ labels.slice(0,4).forEach(pair=>{const s=document.createElement('span');if(pair[1])s.className=pair[1];s.textContent=pair[0];box.appendChild(s);});}}
 function renderTrays(){[0,1].forEach(t=>{
  const tray=$('#tray'+t);tray.innerHTML='';
  for(let i=0;i<SEL.size;i++){
@@ -1464,7 +1465,7 @@ function matchUpdate(dt){
 const FLAGS=[];{const cols=['#ffcf3f','#ff5e5e','#4fd1ff','#7bff8a','#ff8ad4','#ffb25e'];
  for(let i=0;i<26;i++)FLAGS.push({x:40+i*60,y:44+Math.sin(i*.9)*16,c:cols[i%cols.length]});
  for(let i=0;i<22;i++)FLAGS.push({x:80+i*70,y:120+Math.sin(i*.7)*20,c:cols[(i+3)%cols.length],far:1});}
-const CITY=[];{let x=-20;while(x<W+40){const w=rand(50,120),h=rand(90,260);CITY.push({x,w,h});x+=w+rand(4,18);}}
+const CITY=[];{let x=-20;while(x<W+40){const w=rand(50,120),h=rand(90,260);CITY.push({x:x,w:w,h:h});x+=w+rand(4,18);}}
 function plant(c,x,y){c.fillStyle='#8a5a33';c.beginPath();c.moveTo(x-22,y);c.lineTo(x+22,y);c.lineTo(x+16,y+40);c.lineTo(x-16,y+40);c.closePath();c.fill();
  c.strokeStyle='#2f9e44';c.lineWidth=6;for(let i=-2;i<=2;i++){c.beginPath();c.moveTo(x,y);c.quadraticCurveTo(x+i*18,y-40,x+i*26,y-70);c.stroke();}}
 function pine(c,x,y){c.fillStyle='#5b3a1e';c.fillRect(x-6,y-30,12,34);
@@ -1549,7 +1550,7 @@ function drawStage(c,t){if(MAP.id==='praia')drawStageBeach(c,t);else if(MAP.id==
 function drawWorldFighter(c,f,t){
  if(f.dead||f.state==='wait')return;
  if(f.onG)ell(c,f.x,f.y+4,26,7,'rgba(0,0,0,.35)');
- const o={t,step:f.animT,air:!f.onG,moving:Math.abs(f.vx)>40,cast:f.castT>0,blind:f.blindT>0,
+ const o={t:t,step:f.animT,air:!f.onG,moving:Math.abs(f.vx)>40,cast:f.castT>0,blind:f.blindT>0,
   atk:f.atk?{type:f.atk.type,p:f.atk.t/(ATK[f.atk.type].w+ATK[f.atk.type].a+ATK[f.atk.type].r)}:null,
   weapon:f.weapon?f.ch.id:null,def:f.defending};
  if(f.hitFlash>0)o.tint={c:'#ffffff',k:.75};
@@ -1580,7 +1581,7 @@ function render(){const c=g,t=G.t;
  if(G.shake>0)c.translate(rand(-G.shake,G.shake),rand(-G.shake,G.shake));
  drawBG(c,t);drawStage(c,t);drawDrops(c,t);
  for(const w of G.walls){const pu=.75+Math.sin(t*6)*.2;
-  c.fillStyle=`rgba(127,227,255,${.3*pu})`;rr(c,w.x,w.y,w.w,w.h,10);c.fill();
+  c.fillStyle='rgba(127,227,255,'+(.3*pu)+')';rr(c,w.x,w.y,w.w,w.h,10);c.fill();
   c.strokeStyle='#7fe3ff';c.lineWidth=3;rr(c,w.x,w.y,w.w,w.h,10);c.stroke();}
  for(const f of G.fighters)drawWorldFighter(c,f,t);
  for(const a of G.ants){c.save();c.translate(a.x,a.y);
@@ -1608,7 +1609,7 @@ function render(){const c=g,t=G.t;
   c.font=p.size+'px Bangers';c.lineWidth=4;c.strokeStyle='#00000090';
   c.strokeText(p.txt,p.x,p.y);c.fillStyle=p.col;c.fillText(p.txt,p.x,p.y);}
  c.globalAlpha=1;
- if(G.flash>0){c.fillStyle=`rgba(255,255,240,${G.flash})`;c.fillRect(-30,-30,W+60,H+60);}
+ if(G.flash>0){c.fillStyle='rgba(255,255,240,'+G.flash+')';c.fillRect(-30,-30,W+60,H+60);}
  c.restore();
  if(G.attract){c.fillStyle='rgba(7,8,26,.35)';c.fillRect(0,0,W,H);}}
 
@@ -1617,8 +1618,8 @@ function buildHUD(){hudL.innerHTML='';hudR.innerHTML='';
  for(const f of G.fighters){
   const d=document.createElement('div');
   d.className='fcard '+(f.team===1?'red':'');
-  const plabel=f.human?`<em>P${f.playerIdx+1}</em>`:'';
-  d.innerHTML=`<canvas width="64" height="64"></canvas><div class="fi" style="flex:1"><div class="fn">${f.ch.nome}</div><div class="fd">0%</div><div class="fs"></div><div class="fa"></div><div class="fp"><i></i></div><div class="fb"></div></div>${plabel}`;
+  const plabel=f.human?'<em>P'+(f.playerIdx+1)+'</em>':'';
+  d.innerHTML='<canvas width="64" height="64"></canvas><div class="fi" style="flex:1"><div class="fn">'+f.ch.nome+'</div><div class="fd">0%</div><div class="fs"></div><div class="fa"></div><div class="fp"><i></i></div><div class="fb"></div></div>'+plabel;
   (f.team===0?hudL:hudR).appendChild(d);
   f.hud={el:d,cv:d.querySelector('canvas'),d:d.querySelector('.fd'),s:d.querySelector('.fs'),a:d.querySelector('.fa'),p:d.querySelector('.fp i'),b:d.querySelector('.fb')};}}
 function updateHUD(){if(!G.fighters.length||G.attract)return;
@@ -1645,7 +1646,7 @@ function updateHUD(){if(!G.fighters.length||G.attract)return;
   h.el.classList.toggle('ko',f.dead);
   drawPortrait(h.cv,f.ch,G.t);}
  const tm=Math.max(0,Math.ceil(G.time));
- $('#timerBox').textContent=Math.floor(tm/60)+':'+(''+(tm%60)).padStart(2,'0');}
+ $('#timerBox').textContent=Math.floor(tm/60)+':'+String(tm%60).padStart(2,'0');}
 
 const SCREENS=['scr-title','scr-setup','scr-online','scr-olsetup','scr-olselect','scr-controls','scr-select','scr-vs','scr-result','scr-pause','scr-help'];
 function show(id){SCREENS.forEach(s=>$('#'+s).classList.toggle('active',s===id));UI.idx=0;uiRefresh();}
@@ -1667,7 +1668,7 @@ $('#btnJoin').onclick=()=>{initAudio();joinRoom();};
 $('#btnLeave').onclick=()=>{if(NET.role==='guest'&&NET.hostCon)NET.hostCon.send({t:'leave'});if(NET.peer)NET.peer.destroy();olReset();olRender();};
 $('#btnOlConfig').onclick=()=>{if(NET.role==='host')olGoto('scr-olsetup',1);};
 $('#btnOlStep2').onclick=()=>{if(NET.role==='host')olGoto('scr-olsetup',2);};
-$('#btnOlStep1b').onclick=()=>{if(NET.role==='host')olGoto('scr-olsetup',1);else show('scr-olsetup');};
+$('#btnOlStep1b').onclick=()=>{if(NET.role==='host')olGoto('scr-olsetup',1);else show('scr-online');};
 $('#btnOlSelect2').onclick=()=>{if(NET.role==='host')olGoto('scr-olselect',2);};
 $('#btnOlBack').onclick=()=>{sfx('sel');if(NET.role==='host')olGoto('scr-olsetup',2);else show('scr-olsetup');};
 $('#btnOlStart').onclick=()=>{if(NET.role==='host')hostStart();};
@@ -1683,7 +1684,7 @@ $('#btnAuto').onclick=()=>{if(!PICK||PICK.done)return;fillRemainingRandom();
 function buildGrid(){const grid=$('#grid');grid.innerHTML='';
  ROSTER.forEach(ch=>{
   const d=document.createElement('div');d.className='card';d.dataset.ch=ch.id;
-  d.innerHTML=`<canvas width="96" height="112"></canvas><div class="cname">${ch.nome}</div><div class="cbar"><i style="background:#ff7a1a;width:${(ch.f-85)/35*100}%"></i></div><div class="cbar"><i style="background:#3fd6ff;width:${(ch.v-85)/35*100}%"></i></div><div class="cbar"><i style="background:#6dff8a;width:${(ch.r-85)/35*100}%"></i></div><span class="tagT"></span>`;
+  d.innerHTML='<canvas width="96" height="112"></canvas><div class="cname">'+ch.nome+'</div><div class="cbar"><i style="background:#ff7a1a;width:'+((ch.f-85)/35*100)+'%"></i></div><div class="cbar"><i style="background:#3fd6ff;width:'+((ch.v-85)/35*100)+'%"></i></div><div class="cbar"><i style="background:#6dff8a;width:'+((ch.r-85)/35*100)+'%"></i></div><span class="tagT"></span>';
   grid.appendChild(d);
   gridCards[ch.id]={el:d,cv:d.querySelector('canvas'),tag:d.querySelector('.tagT')};
   d.onclick=()=>{if(!PICK||PICK.done)return;
@@ -1697,7 +1698,7 @@ function buildGrid(){const grid=$('#grid');grid.innerHTML='';
  const sg=document.createElement('div');sg.className='card';sg.dataset.special='go';
  sg.innerHTML='<div class="cname" style="font-size:34px;padding:14px 0">▶</div><div class="cname">LUTAR!</div>';
  sg.onclick=()=>handleSpecial('go');grid.appendChild(sg);
- GRID_ELS=[...grid.children];}
+ GRID_ELS=Array.prototype.slice.call(grid.children);}
 const dPanel=$('#detail'),dBody=$('#dBody'),dEmpty=$('#dEmpty');
 function showDetail(ch){$('#dName').textContent=ch.nome.toUpperCase();
  $('#dF').style.width=((ch.f-85)/35*100)+'%';$('#dV').style.width=((ch.v-85)/35*100)+'%';$('#dR').style.width=((ch.r-85)/35*100)+'%';
