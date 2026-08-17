@@ -11,7 +11,7 @@
 :root{--azul:#2fa8ff;--verm:#ff4d5e;--laranja:#ff7a1a;--ouro:#ffd23d;--painel:#151a33;--borda:#2c3660;--texto:#eef1ff;--band:0px;--hudband:0px}
 *{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden;background:#07081a;font-family:'Chakra Petch',sans-serif;color:var(--texto)}
-/* O palco ocupa 100% da janela/tela cheia; o canvas preenche o palco e o renderer adapta internamente */
+body.pseudoFs{position:fixed;inset:0;overflow:hidden}
 #stage-wrap{position:fixed;inset:0;display:block;padding-bottom:var(--band);padding-top:var(--hudband);background:radial-gradient(1200px 700px at 50% 30%,#101433,#07081a)}
 canvas#cv{position:absolute;inset:var(--hudband) 0 var(--band) 0;width:100%;height:calc(100% - var(--band) - var(--hudband));display:block}
 body.touchmode{--band:clamp(104px,20vh,260px)}
@@ -455,7 +455,7 @@ h2.sh{font-family:Bangers;font-size:clamp(20px,4.6vh,46px);letter-spacing:3px;co
   <h3>COMO JOGAR</h3>
   Briga de plataforma estilo Brawlhalla: aumente o <b>% de dano</b> e arremesse todos pra fora da arena. Vence o time que sobrar (4 min). O <b>soco é livre</b>.
   <h3>TELA CHEIA</h3>
-  <b>⛶ TELA CHEIA</b> usa a Fullscreen API real: o navegador oculta abas/barras e o jogo ocupa 100% da tela, com o renderer/câmera se adaptando automaticamente.
+  <b>⛶ TELA CHEIA</b> usa a Fullscreen API na página inteira (oculta abas/barras) e o renderer se adapta. Em navegadores sem a API (iOS), ativa o modo "pseudo-tela-cheia".
   <div style="text-align:center;margin-top:16px"><button class="btn small" id="btnHelpBack">VOLTAR</button></div>
 </div></div>
 
@@ -478,7 +478,6 @@ function mix(a,b,k){if(!a||!b)return a||'#fff';if(a[0]!=='#')return a;
  return `rgb(${Math.round(((A>>16)&255)+((((B>>16)&255)-((A>>16)&255))*k))},${Math.round(((A>>8)&255)+((((B>>8)&255)-((A>>8)&255))*k))},${Math.round((A&255)+(((B&255)-(A&255))*k))})`;}
 const cv=$('#cv'),g=cv.getContext('2d');
 const stageWrap=$('#stage-wrap');
-/* ===== RENDERER RESPONSIVO: backing store em pixels reais + câmera (escala/offset) ===== */
 let viewScale=1,viewOX=0,viewOY=0;
 function resizeRenderer(){
  const dpr=Math.min(2,window.devicePixelRatio||1);
@@ -488,9 +487,7 @@ function resizeRenderer(){
  viewOX=(cv.width-W*viewScale)/2; viewOY=(cv.height-H*viewScale)/2;
 }
 addEventListener('resize',()=>{resizeRenderer();applyTouchLayout();});
-function onFsChange(){resizeRenderer();updateFsButtons();}
-document.addEventListener('fullscreenchange',onFsChange);
-document.addEventListener('webkitfullscreenchange',onFsChange);
+addEventListener('orientationchange',()=>{resizeRenderer();applyTouchLayout();});
 function rr(c,x,y,w,h,r){r=Math.min(r,w/2,h/2);c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
 function limb(c,x1,y1,x2,y2,w,col){c.strokeStyle=col;c.lineWidth=w;c.lineCap='round';c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();}
 function ell(c,x,y,rx,ry,col){c.fillStyle=col;c.beginPath();c.ellipse(x,y,rx,ry,0,0,TAU);c.fill();}
@@ -526,25 +523,23 @@ function startMusic(){if(mTimer||!actx)return;const bass=[55,55,82.4,55,65.4,65.
   mStep++;},60000/142/2);}
 $('#muteBtn').onclick=()=>{initAudio();muted=!muted;$('#muteBtn').textContent=muted?'🔇':'';};
 
-/* ===== TELA CHEIA REAL (Fullscreen API) ===== */
+/* ===== TELA CHEIA: Fullscreen API na PÁGINA INTEIRA (documentElement) ===== */
+function fsElement(){return document.fullscreenElement||document.webkitFullscreenElement||document.mozFullScreenElement||document.msFullscreenElement||null;}
 function toggleFullscreen(){
- const el=stageWrap; /* elemento principal do jogo */
+ const d=document, el=d.documentElement;
+ const exit=d.exitFullscreen||d.webkitExitFullscreen||d.mozCancelFullScreen||d.msExitFullscreen;
+ const req=el.requestFullscreen||el.webkitRequestFullscreen||el.mozRequestFullScreen||el.msRequestFullscreen;
  try{
-  const fsEl=document.fullscreenElement||document.webkitFullscreenElement||document.mozFullScreenElement||document.msFullscreenElement;
-  if(fsEl){
-   if(document.exitFullscreen)document.exitFullscreen();
-   else if(document.webkitExitFullscreen)document.webkitExitFullscreen();
-   else if(document.mozCancelFullScreen)document.mozCancelFullScreen();
-   else if(document.msExitFullscreen)document.msExitFullscreen();
-  }else{
-   if(el.requestFullscreen)el.requestFullscreen();
-   else if(el.webkitRequestFullscreen)el.webkitRequestFullscreen();
-   else if(el.mozRequestFullScreen)el.mozRequestFullScreen();
-   else if(el.msRequestFullscreen)el.msRequestFullscreen();
-  }
- }catch(e){}}
-function updateFsButtons(){const fs=!!(document.fullscreenElement||document.webkitFullscreenElement||document.mozFullScreenElement||document.msFullscreenElement);
+  if(fsElement()){ if(exit)exit.call(d); else document.body.classList.remove('pseudoFs'); }
+  else if(req){ const r=req.call(el); if(r&&r.catch)r.catch(()=>{document.body.classList.add('pseudoFs');}); }
+  else{ document.body.classList.add('pseudoFs'); }
+ }catch(e){ document.body.classList.add('pseudoFs'); }
+}
+function updateFsButtons(){const fs=!!fsElement()||document.body.classList.contains('pseudoFs');
  $('#btnFullscreen').textContent=fs?'⛶ SAIR DA TELA CHEIA':'⛶ TELA CHEIA';}
+document.addEventListener('fullscreenchange',()=>{resizeRenderer();updateFsButtons();});
+document.addEventListener('webkitfullscreenchange',()=>{resizeRenderer();updateFsButtons();});
+document.addEventListener('mozfullscreenchange',()=>{resizeRenderer();updateFsButtons();});
 $('#btnFullscreen').onclick=()=>{initAudio();toggleFullscreen();};
 $('#fsBtn').onclick=()=>{toggleFullscreen();};
 
@@ -1806,7 +1801,6 @@ function drawWorldFighter(c,f,t){
    for(let s=0;s<3;s++){px+=rand(-22,22);py+=rand(-18,18);c.lineTo(px,py);}c.stroke();}}
  if(f.trucoWarn>0){c.strokeStyle='rgba(255,60,60,'+(0.5+Math.sin(t*20)*.3)+')';c.lineWidth=4;c.beginPath();c.arc(f.x,f.y-44,50,0,TAU);c.stroke();}
  if(f.stunT>0){c.fillStyle='#ffe95e';c.font='22px Bangers';c.textAlign='center';c.fillText('⚡',f.x+Math.sin(t*9)*14,f.y-108);}}
-/* RENDER com câmera responsiva: limpa em pixels reais e aplica escala/offset da view */
 function render(){const c=g,t=G.t;
  c.setTransform(1,0,0,1,0,0);
  c.fillStyle='#07081a';c.fillRect(0,0,cv.width,cv.height);
